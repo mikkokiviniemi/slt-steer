@@ -33,20 +33,32 @@ export default {
   },
   methods: {
     async fetchMapping() {
-      const response = await axios.get("http://127.0.0.1:8000/api/data");
-      this.mapping = response.data.data;
-    },
-    sendMessage() {
-      if (this.newMessage.trim() === "") return;
-      this.messages.push({ text: this.newMessage, from: "self" });
-      const num = parseInt(this.newMessage, 10);
-      let responseText = "";
-      if (!isNaN(num) && num >= 1 && num <= this.mapping.length) {
-        responseText = this.mapping[num - 1];
-      } else {
-        responseText = "Kokeile kysyä jotain muuta.";
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/data");
+        this.mapping = response.data.data;
+      } catch (error) {
+        console.error("Virhe haettaessa dataa:", error);
       }
-      this.messages.push({ text: responseText, from: "other" });
+    },
+    async sendMessage() {
+      if (this.newMessage.trim() === "") return;
+      
+      // Lisää käyttäjän viesti chattiin
+      this.messages.push({ text: this.newMessage, from: "self" });
+      
+      try {
+        const response = await axios.post("http://127.0.0.1:8000/api/send", {
+          message: this.newMessage
+        });
+        
+        // Lisää palvelimen vastaus chattiin
+        this.messages.push({ text: response.data.reply, from: "other" });
+      } catch (error) {
+        console.error("Virhe viestin lähettämisessä:", error);
+        this.messages.push({ text: "Palvelimeen ei saada yhteyttä.", from: "other" });
+      }
+      
+      // Tyhjennä syötekenttä
       this.newMessage = "";
     }
   },
@@ -55,6 +67,8 @@ export default {
   }
 };
 </script>
+
+
 
 <style scoped>
 
