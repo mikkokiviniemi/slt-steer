@@ -1,5 +1,7 @@
 <template>
-  <h1></h1>
+  <div class="logo-container">
+    <img src="./logo.png" alt="HeartWise Logo" class="logo" />
+  </div>
   <div class="chat-container">
     <div class="messages">
       <div
@@ -11,8 +13,8 @@
       </div>
     </div>
     <form @submit.prevent="sendMessage" class="input-area">
-      <input v-model="newMessage" type="text" placeholder="Type a number..." required />
-      <button type="submit">Send</button>
+      <input v-model="newMessage" type="text" placeholder="Kirjoita kysymyksesi tähän..." required />
+      <button type="submit">Lähetä</button>
     </form>
   </div>
 </template>
@@ -20,8 +22,6 @@
 <script>
 import axios from "axios";
 
-
-//DATA FROM BACKEND THINGY
 export default {
   name: "ChatComponent",
   data() {
@@ -44,7 +44,7 @@ export default {
       if (!isNaN(num) && num >= 1 && num <= this.mapping.length) {
         responseText = this.mapping[num - 1];
       } else {
-        responseText = "no number";
+        responseText = "Kokeile kysyä jotain muuta.";
       }
       this.messages.push({ text: responseText, from: "other" });
       this.newMessage = "";
@@ -57,27 +57,54 @@ export default {
 </script>
 
 <style scoped>
+
+body {
+  background-color: #f0f4f8;
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-direction: column;
+}
+
+.logo {
+  width: 200px;
+  height: auto;
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+}
+
 .chat-container {
   width: 100%;
   max-width: 600px;
-  margin: 0 auto;
-  border: 1px solid;
-  border-radius: 4px;
-  padding: 10px;
+  margin: 20px auto;
+  background: #ffffff;
+  border: 2px solid #005b96;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 91, 150, 0.2);
   display: flex;
   flex-direction: column;
   height: 80vh;
   box-sizing: border-box;
+  padding: 20px;
 }
 
 .messages {
   flex: 1;
   overflow-y: auto;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  padding-right: 10px;
 }
 
 .message {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   word-wrap: break-word;
 }
 
@@ -91,47 +118,72 @@ export default {
 
 .message-content {
   display: inline-block;
-  padding: 8px 12px;
-  border: 1px solid;
-  border-radius: 4px;
-  max-width: 80%;
+  padding: 10px 15px;
+  border-radius: 20px;
+  max-width: 75%;
+  font-size: 1rem;
+}
+
+.message.self .message-content {
+  background: #43a352;
+  color: white;
+}
+
+.message.other .message-content {
+  background: #e0e0e0;
+  color: #333;
 }
 
 .input-area {
   display: flex;
+  align-items: center;
 }
 
 .input-area input {
   flex: 1;
-  padding: 8px;
-  border: 1px solid;
-  border-radius: 4px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
   box-sizing: border-box;
+  font-size: 1rem;
 }
 
 .input-area button {
-  margin-left: 5px;
-  padding: 8px 12px;
-  border: 1px solid;
-  border-radius: 4px;
-  background: none;
+  margin-left: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  background-color: #005b96;
+  color: white;
+  font-size: 1rem;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.input-area button:hover {
+  background-color: #004080;
 }
 
 @media (max-width: 600px) {
+  .logo {
+    width: 150px;
+  }
+
   .chat-container {
     height: 90vh;
-    padding: 5px;
+    padding: 15px;
   }
-  .input-area input {
-    padding: 6px;
-  }
-  .input-area button {
-    padding: 6px 10px;
-  }
+
   .message-content {
-    padding: 6px 10px;
-    max-width: 90%;
+    font-size: 0.9rem;
+  }
+
+  .input-area input {
+    padding: 8px;
+  }
+
+  .input-area button {
+    padding: 8px 15px;
   }
 }
 </style>
