@@ -1,7 +1,4 @@
 <template>
-  <div class="logo-container">
-    <img src="./logo.png" alt="HeartWise Logo" class="logo" />
-  </div>
   <div class="chat-container">
     <div class="messages">
       <div
@@ -72,29 +69,6 @@ export default {
 
 <style scoped>
 
-body {
-  background-color: #f0f4f8;
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  flex-direction: column;
-}
-
-.logo {
-  width: 200px;
-  height: auto;
-  max-width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
-}
-
 .chat-container {
   width: 100%;
   max-width: 600px;
@@ -139,7 +113,7 @@ body {
 }
 
 .message.self .message-content {
-  background: #43a352;
+  background: #005b96;
   color: white;
 }
 
@@ -179,9 +153,6 @@ body {
 }
 
 @media (max-width: 600px) {
-  .logo {
-    width: 150px;
-  }
 
   .chat-container {
     height: 90vh;
