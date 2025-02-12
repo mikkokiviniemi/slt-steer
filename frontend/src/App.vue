@@ -1,15 +1,9 @@
 <template>
   <div>
-    <ChatComponent/>
+    <!--This tells Vue to load the correct page based on the current URL-->
+    <router-view /> 
   </div>
 </template>
 
-<script>
-import ChatComponent from './components/Chat.vue';
-
-export default {
-  components: {
-    ChatComponent
-  }
-};
+<script setup>
 </script>

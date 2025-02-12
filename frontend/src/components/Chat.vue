@@ -1,7 +1,4 @@
 <template>
-  <div class="logo-container">
-    <img src="./logo.png" alt="HeartWise Logo" class="logo" />
-  </div>
   <div class="chat-container">
     <div class="messages">
       <div
