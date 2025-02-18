@@ -23,7 +23,7 @@ env/
 ENV/
 *.db
 instance/
-secrets.json
+config.py
 
 # Logs & Debugging
 *.log
