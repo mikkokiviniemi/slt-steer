@@ -23,6 +23,7 @@ env/
 ENV/
 *.db
 instance/
+secrets.json
 
 # Logs & Debugging
 *.log

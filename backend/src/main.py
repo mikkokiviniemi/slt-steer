@@ -4,7 +4,29 @@ from pydantic import BaseModel
 import google.generativeai as genai
 import os
 import re
-genai.configure(api_key=os.environ['gemini-api'])
+import json
+
+# everyone needs to have their own secrets.json file with their own gemini_api key
+# secrets.json file should be in the same directory as main.py
+# secrets.json file should have the following format:
+# {
+#     "gemini_api": "your_gemini_api_key_here"
+# }
+# sercret.json file should be added to .gitignore so it won't be pushed to the repository
+
+try:
+    with open("secrets.json", "r") as f:
+        secrets = json.load(f)
+        genai.configure(api_key=secrets["gemini_api"])
+except FileNotFoundError:
+    raise RuntimeError("secrets.json file was not found. Create file and add 'gemini_api' key.")
+except KeyError:
+    raise RuntimeError("'gemini_api' key is missing from the secrets.json file.")
+except json.JSONDecodeError:
+    raise RuntimeError("secrets.json file has an invalid JSON format.")
+
+# old way of setting the api key
+# genai.configure(api_key=os.environ['gemini-api'])
 
 app = FastAPI()
 
