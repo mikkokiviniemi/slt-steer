@@ -14,6 +14,16 @@ try:
 except Exception as e:
     raise RuntimeError(f"Error accessing API key: {e}")
 
+# everyone needs to have their own service and usernames in config.py
+# config.py is located in backend/src/config.py
+# config.py should look like this:
+#
+# SERVICE_NAME = "my_gemini_service"  # Choose a descriptive name
+# USERNAME = "gemini_user"         # Choose a username
+#
+# add config.py to .gitignore
+# everyone can have their own service and usernames
+
 
 # old way of setting the api key
 # genai.configure(api_key=os.environ['gemini-api'])
