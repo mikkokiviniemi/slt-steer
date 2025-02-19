@@ -1,12 +1,18 @@
 <template>
-    <div class="layout">
-      <HeaderBar :isSidebarOpen="isSidebarOpen" @toggleSidebar="toggleSidebar" />
-      <SidebarMenu :isOpen="isSidebarOpen" @toggleSidebar="toggleSidebar" />
-      <main>
-        <Chat />
-      </main>
-    </div>
-  </template>
+  <div class="layout">
+    <HeaderBar 
+      :is-sidebar-open="isSidebarOpen" 
+      @toggle-sidebar="handleSidebarToggle" 
+    />
+    <SidebarMenu 
+      :is-open="isSidebarOpen" 
+      @toggle-sidebar="handleSidebarToggle" 
+    />
+    <main>
+      <Chat />
+    </main>
+  </div>
+</template>
   
   <script setup>
   import { ref } from "vue";
@@ -16,7 +22,7 @@
   
   const isSidebarOpen = ref(false);
   
-  const toggleSidebar = () => {
+  const handleSidebarToggle = () => {
     isSidebarOpen.value = !isSidebarOpen.value;
   };
   </script>

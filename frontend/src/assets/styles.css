@@ -1,0 +1,39 @@
+:root {
+    /* Primary Colors (Trust & Energy) */
+    --primary-color: #0074cc; /* Deep but Vibrant Blue */
+    --secondary-color: #2ecc71; /* Fresh, Calming Green */
+
+    /* Background Colors (Clean & Inviting) */
+    --background-light: #e3f2fd; /* Soft, Warm Sky Blue */
+    --background-neutral: #fefefe; /* Pure White */
+    --background-dark: #1e4976; /* Professional Darker Blue */
+
+    /* Sidebar Background (Lighter but Structured) */
+    --sidebar-bg: #b2daf5; /* Soft but Slightly Darker Blue */
+
+    /* Text Colors (Legible & Modern) */
+    --text-light: #ffffff;
+    --text-dark: #1d1d1d; /* Deep Charcoal for Perfect Readability */
+    --text-secondary: #4a6572; /* Soft Blue-Gray for Subtext */
+
+    /* Buttons & Borders (Professional Touch) */
+    --button-hover: #005cbf; /* Stronger, Deeper Blue */
+    --border-color: #8cb3d9; /* Subtle Sky Blue Border */
+
+    /* Status Colors (Balanced Visibility) */
+    --success-color: #23d189; /* Balanced Bright Green */
+    --warning-color: #ffb400; /* Slightly Muted Yellow */
+    --danger-color: #ff4d4d; /* Friendly but Noticeable Red */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-light); /* Ensure background covers */
+}
