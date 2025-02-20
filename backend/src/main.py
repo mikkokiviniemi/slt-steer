@@ -23,17 +23,15 @@ class MessageRequest(BaseModel):
 
 # Gemini vastauksen käsittelyä luettavammaksi
 def formatGeminiResponse(text: str) -> str:
-    text = re.sub(r'\*\*(.*?)\*\*', lambda match: match.group(1).upper(), text)
+    text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
 
     lines = text.split("\n")
-    counter = 1
     for i, line in enumerate(lines):
         match = re.match(r'^\*\s+(.*?)$', line)
         if match:
-            lines[i] = f"{counter}. {match.group(1)}"
-            counter += 1
+            lines[i] = f"- {match.group(1)}"
 
-    return "\n".join(lines)
+    return "<br>".join(lines)
 
 @app.get("/")
 def home():
