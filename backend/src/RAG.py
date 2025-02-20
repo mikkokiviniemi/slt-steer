@@ -1,61 +1,78 @@
+# Asenna tarvittavat paketit, jos niitä ei ole asennettu
+# pip install langchain_google_genai langchain_community langchain_text_splitters pypdf chromadb google-cloud-storage // jos PyPDF2 importti ei toimi -> pip3 install PyPDF2.
+# Jos importit eivät toimi, vaihda interpreteriksi Python 3.10.6 64-bit
 
-# Install the required packages
-# pip install langchain_google_genai langchain_community langchain_text_splitters pypdf chromadb
-
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import PromptTemplate
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_text_splitters import CharacterTextSplitter
-from langchain.chains.combine_documents import create_stuff_documents_chain
+from google.cloud import storage
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.chains import create_retrieval_chain
-from langchain_community.vectorstores import Chroma
-from langchain.storage import InMemoryStore
+from langchain_chroma import Chroma
 import google.generativeai as genai
+from PyPDF2 import PdfReader
 import os
+import io
+import time
 
-# read api key from environment variable
+# Lue API-avain ympäristömuuttujasta
 google_api_key = os.getenv('gemini-api')
 
-file_path = os.path.abspath("backend/src/training_data/ESC_Guidelines.pdf")
+# Google Cloud Storage asetukset
+bucket_name = "training_data-1"  # GCS bucket name
+blob_name = "ESC_Guidelines.pdf"  # Tiedoston nimi bucketissa
 
-loader = PyPDFLoader(file_path)
-data = loader.load()
+# ChromaDB:n tallennuskansio
+persist_directory = "db_cache"
 
-# split the document into chunks
+# Funktio PDF-tiedoston lataamiseen Google Cloud Storage -bucketista
+def download_file_from_gcs(bucket_name, blob_name):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+    
+    print(f"Ladataan tiedosto {blob_name} bucketista {bucket_name}...")
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+    pdf_stream = io.BytesIO()
+    blob.download_to_file(pdf_stream)
+    pdf_stream.seek(0)
 
-text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000, chunk_overlap = 50)
-docs = text_splitter.split_documents(data)
+    print("Tiedosto ladattu muistiin.")
+    return pdf_stream
 
-# setting up the embeddings and creating a vector store with google GEMINI
+# Tarkistetaan, onko data jo prosessoitu
+if os.path.exists(persist_directory):
+    print("Käytetään aiemmin prosessoitua dataa...")
+    vectorstore = Chroma(persist_directory=persist_directory, embedding_function=GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=google_api_key))
+else:
+    print("Ladataan ja prosessoidaan PDF ensimmäistä kertaa...")
+    
+    # Lataa PDF vain kerran
+    pdf_stream = download_file_from_gcs(bucket_name, blob_name)
 
+    # Käytä PdfReaderia tiedoston käsittelyyn
+    reader = PdfReader(pdf_stream)
+    text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
 
-embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001", google_api_key = google_api_key)
+    # Jaa dokumentti osiin (chunking)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=3000,  
+        chunk_overlap=300,  
+        separators=["\n\n", "\n", " ", ""],
+    )
 
-# Geminin esilämmitys
-_ = embeddings.embed_documents(["test"])
+    docs = text_splitter.create_documents([text])
 
-cache_store = InMemoryStore()
+    # Määritä upotukset ja vektorivarasto Google GEMINI:n avulla
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=google_api_key)
 
-# Käytetään Chroma:n pysyvää tallennusta (persist)
-vectorstore = Chroma.from_documents(documents=docs, embedding=embeddings, persist_directory="db_cache")
+    # Luo Chroman vektorivarasto ja tallenna se
+    vectorstore = Chroma.from_documents(documents=docs, embedding=embeddings, persist_directory=persist_directory)
 
+# Luo hakutoiminto
+retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 5})
 
-# retrieve information using LangChain and Gemini
+# LLM asetukset
+llm = ChatGoogleGenerativeAI(model='gemini-1.5-flash-002', temperature=0, max_tokens=500, google_api_key=google_api_key)
 
-retriever = vectorstore.as_retriever(search_type = "mmr", search_kwargs = {"k": 5})
-
-retrieved_docs = retriever.invoke("ESC Guidelines for the management of acute coronary syndromes in patients presenting without persistent ST-segment elevation")
-retrieved_docs
-
-from langchain_google_genai import ChatGoogleGenerativeAI
-
-llm = ChatGoogleGenerativeAI(model = 'gemini-1.5-flash-002', temperature = 0, max_tokens = 500, google_api_key = google_api_key)
-
-from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 
 system_prompt = (
@@ -68,7 +85,7 @@ system_prompt = (
     "{context}"
 )
 
-# Construct the prompt template with the system and human messages
+# Rakennetaan prompt template
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt),
@@ -76,11 +93,17 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
+# Luo RAG-malli
+from langchain.chains.combine_documents import create_stuff_documents_chain
 question_answer_chain = create_stuff_documents_chain(llm, prompt)
-
 rag_chain = create_retrieval_chain(retriever, question_answer_chain)
 
-response = rag_chain.invoke({"input":"What are the recommendations for the management of acute coronary syndromes in patients presenting without persistent ST-segment elevation?"})
+# Testaa suorituskyky (mittaa suoritusaika)
+start_time = time.time()
 
+# Lähetetään kysymys RAG-mallille
+response = rag_chain.invoke({"input": "What are the recommendations for the management of acute coronary syndromes in patients presenting without persistent ST-segment elevation?"})
+
+end_time = time.time()
+print(f"Execution Time: {end_time - start_time:.2f} sec")
 print(response["answer"])
-
