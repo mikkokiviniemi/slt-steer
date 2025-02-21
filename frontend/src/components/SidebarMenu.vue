@@ -1,15 +1,9 @@
 <template>
   <aside :class="['sidebar', { open: isOpen }]">
-    <button 
-      class="close-btn" 
-      @click="handleSidebarToggle"
-    >
-      ✖
-    </button>
     <ul>
       <li><a href="#">Home</a></li>
-      <!--<li><a href="#">Settings</a></li>
-      <li><a href="#">Logout</a></li>-->
+      <li><a href="#">Settings</a></li>
+      <li><a href="#">Logout</a></li>
     </ul>
   </aside>
 </template>
@@ -19,21 +13,20 @@
     isOpen: Boolean
   });
 
-  const emit = defineEmits(["toggle-sidebar"]);
-
-  const handleSidebarToggle = () => {
-    emit("toggle-sidebar");
-  };
   </script>
   
   <style scoped>
   .sidebar {
     position: fixed;
+    top: 60px;
     left: -250px;
     height: 100%;
-    background: var(--primary-color); /* Dark Blue */
+    background: var(--border-color); /* Light Blue (Not to be same as Header bar) */
     color: var(--text-light); /* White */
-    padding: 20px;
+    padding-top: 30px;
+    padding-right: 50px;
+    padding-bottom: 10px;
+    padding-left: 50px;
     transition: left 0.2s;
     font-size: 1rem;
   }
