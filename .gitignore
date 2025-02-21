@@ -23,6 +23,7 @@ env/
 ENV/
 *.db
 instance/
+config.py
 
 # Logs & Debugging
 *.log

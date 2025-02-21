@@ -2,9 +2,30 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import google.generativeai as genai
-import os
 import re
-genai.configure(api_key=os.environ['gemini-api'])
+import keyring
+import config
+
+try:
+    api_key = keyring.get_password(config.SERVICE_NAME, config.USERNAME)
+    if not api_key:
+        raise RuntimeError("API key not found. Run 'python set_api_key.py' first.")
+    genai.configure(api_key=api_key)
+except Exception as e:
+    raise RuntimeError(f"Error accessing API key: {e}")
+
+# everyone needs to have their own service and usernames in config.py
+# config.py is located in backend/src/config.py
+# config.py should look like this:
+#
+# SERVICE_NAME = "my_gemini_service"  # Choose a descriptive name
+# USERNAME = "gemini_user"         # Choose a username
+#
+# add config.py to .gitignore
+# everyone can have their own service and usernames
+
+# old way of setting the api key
+# genai.configure(api_key=os.environ['gemini-api'])
 
 app = FastAPI()
 
