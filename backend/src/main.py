@@ -1,17 +1,57 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, logger
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import google.generativeai as genai
+import os
 import re
+import json
+import datetime
 import keyring
 import config
+import json
 
+app = FastAPI()
+
+# CORS (Allow frontend to communicate with backend)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class MessageRequest(BaseModel):
+    message: str
+
+# Logituksen tallennusfunktio
+def log_request(request: Request = None, status: str = "200 OK", description: str = "", error_details: str = None):
+    timestamp = datetime.datetime.now().strftime("%d.%m.%Y,%H:%M:%S.%f")[:-3]  # Muotoillaan aikaleima
+    log_entry = {
+        "timestamp": timestamp,
+        "method": request.method if request else "SYSTEM",
+        "url": str(request.url) if request else "SYSTEM",
+        "client": request.client.host if request and request.client else "unknown",
+        "status": status,
+        "description": description,
+        "error_details": error_details
+    }
+
+    with open("log.json", "a", encoding="utf-8") as log_file:
+        json.dump(log_entry, log_file, ensure_ascii=False)
+        log_file.write("\n")
+
+
+# Yritetään hakea API-avain ja konfiguroida Gemini
 try:
     api_key = keyring.get_password(config.SERVICE_NAME, config.USERNAME)
     if not api_key:
         raise RuntimeError("API key not found. Run 'python set_api_key.py' first.")
     genai.configure(api_key=api_key)
+    log_request(status="200 OK", description="Gemini API key configured successfully")  # Lokitetaan onnistuminen
+
 except Exception as e:
+    log_request(status="500 Internal Server Error", description="Error accessing API key", error_details=str(e))
     raise RuntimeError(f"Error accessing API key: {e}")
 
 # everyone needs to have their own service and usernames in config.py
@@ -25,56 +65,37 @@ except Exception as e:
 # everyone can have their own service and usernames
 
 
-# old way of setting the api key
+# vanha API versio
 # genai.configure(api_key=os.environ['gemini-api'])
-
-app = FastAPI()
-
-# CORS (Allow frontend to communicate with backend)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Malli viestin käsittelyä varten
-class MessageRequest(BaseModel):
-    message: str
 
 # Gemini vastauksen käsittelyä luettavammaksi
 def formatGeminiResponse(text: str) -> str:
-    text = re.sub(r'\*\*(.*?)\*\*', lambda match: match.group(1).upper(), text)
-
+    text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
     lines = text.split("\n")
-    counter = 1
     for i, line in enumerate(lines):
         match = re.match(r'^\*\s+(.*?)$', line)
         if match:
-            lines[i] = f"{counter}. {match.group(1)}"
-            counter += 1
+            lines[i] = f"- {match.group(1)}"
+    return "<br>".join(lines)
 
-    return "\n".join(lines)
-
-@app.get("/")
-def home():
-    return {"message": "Hello from FastAPI!"}
-
-@app.get("/api/data")
-def get_data():
-    return {"data": ["Sydän", "Help help", "Ai pöhinä"]}
 
 @app.post("/api/send")
-def send_message(request: MessageRequest):
+def send_message(request: Request, message_request: MessageRequest):
     """ Käsittelee viestin ja palauttaa vastauksen """
-    user_message = request.message
+    user_message = message_request.message
     model = genai.GenerativeModel('gemini-1.5-flash-002')
     
     try:
         response = model.generate_content(user_message)
-        #print("Raw gemini response: ", response.text)
-        formatted_text = formatGeminiResponse(response.text)
-        return {"reply": formatted_text}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        log_request(request, "500 Internal Server Error", "Gemini API request failed", str(e))
+        raise HTTPException(status_code=500, detail="Gemini API error")
+
+    try:
+        formatted_text = formatGeminiResponse(response.text)
+    except ValueError as e:
+        log_request(request, "500 Internal Server Error", "Response formatting failed", str(e))
+        raise HTTPException(status_code=500, detail="Response formatting error")
+
+    log_request(request, "200 OK", "Message processed successfully")
+    return {"reply": formatted_text}

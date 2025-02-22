@@ -23,7 +23,8 @@ env/
 ENV/
 *.db
 instance/
-config.py
+# Remove # from next line after pulling from git
+# config.py
 
 # Logs & Debugging
 *.log
