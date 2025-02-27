@@ -1,5 +1,6 @@
 # Asenna tarvittavat paketit, jos niitä ei ole asennettu:
-# pip install langchain_google_genai langchain_community langchain_text_splitters pypdf chromadb google-cloud-storage langchain-chroma // jos PyPDF2 importti ei toimi -> pip3 install PyPDF2.
+# pip install langchain_google_genai langchain_community langchain_text_splitters pypdf chromadb google-cloud-storage langchain-chroma
+# jos PyPDF2 importti ei toimi -> pip3 install PyPDF2.
 # Jos importit eivät toimi, vaihda interpreteriksi Python 3.10.6 64-bit
 
 from google.cloud import storage
@@ -17,57 +18,63 @@ import time
 google_api_key = os.getenv('gemini-api')
 
 # Google Cloud Storage asetukset
-bucket_name = "training_data-1"  # GCS bucket name
-blob_name = "ESC_Guidelines.pdf"  # Tiedoston nimi bucketissa
+bucket_name = "training_data-1" 
+
 
 # ChromaDB:n tallennuskansio
 persist_directory = "db_cache"
 
-# Funktio PDF-tiedoston lataamiseen Google Cloud Storage -bucketista
-def download_file_from_gcs(bucket_name, blob_name):
+# Funktio, joka hakee kaikki PDF-tiedostot Google Cloud Storage -bucketista ja lukee ne muistivirtana 
+def download_pdfs_from_bucket(bucket_name):
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(blob_name)
-    
-    print(f"Ladataan tiedosto {blob_name} bucketista {bucket_name}...")
+    blobs = bucket.list_blobs()  # Hakee kaikki tiedostot bucketista
 
-    pdf_stream = io.BytesIO()
-    blob.download_to_file(pdf_stream)
-    pdf_stream.seek(0)
+    all_texts = []  # Lista, johon kaikki PDF-tiedostojen tekstit tallennetaan
 
-    print("Tiedosto ladattu muistiin.")
-    return pdf_stream
+    for blob in blobs:
+        if blob.name.endswith(".pdf"):  # Vain PDF-tiedostot käsitellään
+            print(f"Ladataan {blob.name} bucketista {bucket_name}...")
+
+            pdf_stream = io.BytesIO()
+            blob.download_to_file(pdf_stream)
+            pdf_stream.seek(0)
+
+            print(f"Tiedosto {blob.name} ladattu muistiin.")
+
+            # Käytetään PdfReaderia tiedoston käsittelyyn
+            reader = PdfReader(pdf_stream)
+            text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
+            all_texts.append(text)
+
+    return all_texts
 
 # Tarkistetaan, onko data jo prosessoitu
 if os.path.exists(persist_directory):
     print("Käytetään aiemmin prosessoitua dataa...")
     vectorstore = Chroma(persist_directory=persist_directory, embedding_function=GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=google_api_key))
 else:
-    print("Ladataan ja prosessoidaan PDF ensimmäistä kertaa...")
+    print("Ladataan ja prosessoidaan kaikki PDF-tiedostot bucketista...")
     
-    # Lataa PDF vain kerran
-    pdf_stream = download_file_from_gcs(bucket_name, blob_name)
 
-    # Käytä PdfReaderia tiedoston käsittelyyn
-    reader = PdfReader(pdf_stream)
-    text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
-
-    # Jaa dokumentti osiin (chunking)
+    all_texts = download_pdfs_from_bucket(bucket_name)
+    
+    # Jakaa dokumentit osiin (chunking)
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=3000,  
         chunk_overlap=300,  
         separators=["\n\n", "\n", " ", ""],
     )
 
-    docs = text_splitter.create_documents([text])
+    docs = text_splitter.create_documents(all_texts)
 
-    # Määritä upotukset ja vektorivarasto Google GEMINI:n avulla
+    # Määritetään upotukset ja vektorivarasto Google GEMINI:n avulla
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=google_api_key)
 
-    # Luo Chroman vektorivarasto ja tallenna se
+    # Luo Chroman vektorivaraston ja tallentaa sen
     vectorstore = Chroma.from_documents(documents=docs, embedding=embeddings, persist_directory=persist_directory)
 
-# Luo hakutoiminto
+# Luo hakutoiminnon
 retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 5})
 
 # LLM asetukset
@@ -75,15 +82,31 @@ llm = ChatGoogleGenerativeAI(model='gemini-1.5-flash-002', temperature=0, max_to
 
 from langchain_core.prompts import ChatPromptTemplate
 
+# Prompti ohjeistamaan AI-agenttia
 system_prompt = (
     "You are an assistant for question-answering tasks. "
     "Use only the following pieces of retrieved context to answer the question. "
-    "If you don't know the answer based on the context, say 'The information is not available in the documents provided.' "
     "Do not use any outside knowledge or make assumptions. "
-    "Use three sentences maximum and keep the answer concise."
+    "Use three sentences maximum for the main answer and keep the response concise. "
+    
+    "If the question is in English and the information is found in the context, first provide a concise answer. "
+    "Then, naturally continue the conversation by asking a relevant follow-up question based on the user's query. "
+    
+    "If the question is in Finnish and the information is found in the context, first provide a concise answer. "
+    "Sen jälkeen jatka keskustelua luontevasti kysymällä aiheeseen liittyvän jatkokysymyksen, joka auttaa käyttäjää syventämään ymmärrystään. "
+    
+    "If the question is in English and the information is not found in the context, say: "
+    "'Unfortunately, I do not have enough information on the topic you asked about. I recommend reaching out to a specialist or your healthcare provider if needed.' "
+    "Then, naturally ask a relevant follow-up question to better understand the user's concern. "
+    
+    "If the question is in Finnish and the information is not found in the context, say: "
+    "'Valitettavasti minulla ei ole riittävästi tietoa esittämääsi aiheeseen. Suosittelen ottamaan yhteyttä asiantuntijaan tai hoitavaan tahoon tarvittaessa.' "
+    "Tämän jälkeen kysy luontevasti jatkokysymys, joka auttaa käyttäjää tarkentamaan tilannettaan. "
+
     "\n\n"
     "{context}"
 )
+
 
 # Rakennetaan prompt template
 prompt = ChatPromptTemplate.from_messages(
@@ -93,16 +116,16 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-# Luo RAG-malli
+# Luodaan RAG-malli
 from langchain.chains.combine_documents import create_stuff_documents_chain
 question_answer_chain = create_stuff_documents_chain(llm, prompt)
 rag_chain = create_retrieval_chain(retriever, question_answer_chain)
 
-# Testaa suorituskyky (mittaa suoritusaika)
+# Testataan suorituskyky (mittaa suoritusaikaa)
 start_time = time.time()
 
 # Lähetetään kysymys RAG-mallille
-response = rag_chain.invoke({"input": "What are the recommendations for the management of acute coronary syndromes in patients presenting without persistent ST-segment elevation?"})
+response = rag_chain.invoke({"input": "Voinko liikkua sydäninfarktin jälkeen?"})
 
 end_time = time.time()
 print(f"Execution Time: {end_time - start_time:.2f} sec")
