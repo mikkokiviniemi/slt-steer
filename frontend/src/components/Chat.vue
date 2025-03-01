@@ -1,7 +1,4 @@
 <template>
-  <div class="logo-container">
-    <img src="./logo.png" alt="HeartWise Logo" class="logo" />
-  </div>
   <div class="chat-container">
     <div class="messages">
       <div
@@ -9,12 +6,25 @@
         :key="index"
         :class="['message', message.from === 'self' ? 'self' : 'other']"
       >
-        <div class="message-content">{{ message.text }}</div>
+        <div 
+          class="message-content" 
+          v-html="message.text"
+        ></div>
       </div>
     </div>
-    <form @submit.prevent="sendMessage" class="input-area">
-      <input v-model="newMessage" type="text" placeholder="Kirjoita kysymyksesi tähän..." required />
-      <button type="submit">Lähetä</button>
+    <form 
+      class="input-area" 
+      @submit.prevent="sendMessage"
+    >
+      <input 
+        v-model="newMessage" 
+        type="text" 
+        placeholder="Kirjoita kysymyksesi tähän..." 
+        required
+      >
+      <button type="submit">
+        Lähetä
+      </button>
     </form>
   </div>
 </template>
@@ -31,30 +41,44 @@ export default {
       newMessage: ""
     };
   },
-  methods: {
-    async fetchMapping() {
-      const response = await axios.get("http://127.0.0.1:8000/api/data");
-      this.mapping = response.data.data;
-    },
-    sendMessage() {
-      if (this.newMessage.trim() === "") return;
-      this.messages.push({ text: this.newMessage, from: "self" });
-      const num = parseInt(this.newMessage, 10);
-      let responseText = "";
-      if (!isNaN(num) && num >= 1 && num <= this.mapping.length) {
-        responseText = this.mapping[num - 1];
-      } else {
-        responseText = "Kokeile kysyä jotain muuta.";
-      }
-      this.messages.push({ text: responseText, from: "other" });
-      this.newMessage = "";
-    }
-  },
   mounted() {
     this.fetchMapping();
+  },
+  methods: {
+    async fetchMapping() {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/data");
+        this.mapping = response.data.data;
+      } catch (error) {
+        console.error("Virhe haettaessa dataa:", error);
+      }
+    },
+    async sendMessage() {
+      if (this.newMessage.trim() === "") return;
+      
+      // Lisää käyttäjän viesti chattiin
+      this.messages.push({ text: this.newMessage, from: "self" });
+      
+      try {
+        const response = await axios.post("http://127.0.0.1:8000/api/send", {
+          message: this.newMessage
+        });
+        
+        // Lisää palvelimen vastaus chattiin
+        this.messages.push({ text: response.data.reply, from: "other" });
+      } catch (error) {
+        console.error("Virhe viestin lähettämisessä:", error);
+        this.messages.push({ text: "Palvelimeen ei saada yhteyttä.", from: "other" });
+      }
+      
+      // Tyhjennä syötekenttä
+      this.newMessage = "";
+    }
   }
 };
 </script>
+
+
 
 <style scoped>
 
