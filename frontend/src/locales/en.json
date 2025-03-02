@@ -1,0 +1,11 @@
+{
+    "fin": "Finnish",
+    "eng": "English",
+    "prompt": "Write your question here...",
+    "send": "Send",
+    "home": "Home",
+    "data-error": "Error while getting data:",
+    "send-error": "Error while sending message:",
+    "connection-error": "Error: Cannot connect to server.",
+    "change": "Language changed:"
+    }

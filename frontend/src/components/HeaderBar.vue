@@ -18,14 +18,14 @@
 
     <div class="language-selector">
       <select 
-        v-model="selectedLanguage" 
+        v-model="locale" 
         @change="changeLanguage"
       >
         <option value="fi">
-          Finnish
+          <p>{{ $t("fin") }}</p>
         </option>
         <option value="en">
-          English
+          <p>{{ $t("eng") }}</p>
         </option>
       </select>
     </div>
@@ -33,22 +33,21 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 defineProps({
   "isSidebarOpen" : Boolean
 }); // Prop for sidebar state
 
 const emit = defineEmits(["toggle-sidebar"]);
-
+const { locale } = useI18n();
 const handleSidebarToggle = () => {
   emit("toggle-sidebar");
 };
 
-const selectedLanguage = ref("fi");
-
 const changeLanguage = () => {
-    console.log("Language changed to:", selectedLanguage.value);    
+    console.log("Kieli vaihdettu", locale.value);  //Tallennetaan käyttäjän valinta
+    localStorage.setItem("selectedLanguage", locale.value);
     // Add logic to change the language globally in your app if needed
 }
 
