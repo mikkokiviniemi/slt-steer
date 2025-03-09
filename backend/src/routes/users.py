@@ -31,16 +31,3 @@ async def delete_user(patientId: str):
     if delete_result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
     return {"message": "User deleted successfully"}
-
-
-@router.get("/{patientId}", response_model=UserModel)
-async def get_user(patientId: str):
-    """ Retrieves user data from MongoDB """
-    user = await users_collection.find_one({"patientId": patientId})
-
-    if not user:
-        print(f"❌ User with patientId {patientId} not found in MongoDB")
-        raise HTTPException(status_code=404, detail="User not found")
-
-    print(f"✅ User found in MongoDB: {user}")
-    return user

@@ -26,10 +26,15 @@ if not MONGO_URI:
 
 logger.info(f"Loaded MONGO_URI: {MONGO_URI}")
 
+# Database connection
+client = None
+db = None
+users_collection = None
+
 # Connect to MongoDB
 try:
     client = AsyncIOMotorClient(MONGO_URI)
-    db = client["chatbot_database"]  # Use the correct database name
+    db = client["chatbot_database"] 
     users_collection = db["users"]
     logger.info("✅ Successfully connected to MongoDB!")
 except Exception as e:

@@ -1,44 +1,28 @@
-<script>
-import { ref, onMounted } from "vue";
+<script setup>
+import { ref } from "vue";
 import { getUser } from "@/services/api.js";
 
-// Testing file for fetching isnformation of single user
+const user = ref(null);
+const patientId = ref("");
 
-export default {
-  setup() {
-    const user = ref(null);
-    const patientId = "P1001";
-
-    onMounted(async () => {
-      user.value = await getUser(patientId);
-    });
-
-    return { user };
-  },
+const fetchUser = async () => {
+  if (!patientId.value.trim()) return; // Prevent empty requests
+  user.value = await getUser(patientId.value);
 };
 </script>
 
 <template>
   <div>
-    <h1>User Profile</h1>
-    
-    <div v-if="user">
-      <p><strong>Name:</strong> {{ user.firstName }} {{ user.lastName }}</p>
-      <p><strong>Date of Birth:</strong> {{ user.dateOfBirth }}</p>
-      <p><strong>Preferred Language:</strong> {{ user.languageSettings.preferredLanguage }}</p>
-      <p><strong>Available Languages:</strong> {{ user.languageSettings.availableLanguages.join(", ") }}</p>
-      <p><strong>Weight:</strong> {{ user.weight }} kg</p>
-      <p><strong>Height:</strong> {{ user.height }} cm</p>
-    </div>
+    <input 
+      v-model="patientId" 
+      placeholder="Enter Patient ID"
+    >  
+    <button @click="fetchUser">
+      Fetch
+    </button>
 
-    <div v-else>
-      <p>Loading user data...</p>
-    </div>
+    <pre v-if="user">
+      {{ user }}
+    </pre>
   </div>
 </template>
-
-<style scoped>
-h1 {
-  color: #2c3e50;
-}
-</style>
