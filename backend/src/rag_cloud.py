@@ -9,12 +9,14 @@ from PyPDF2 import PdfReader
 import os
 import io
 import time
+from dotenv import load_dotenv
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 
-# HUOM! Varmista, että environment variable 'gemini-api' on asetettu
-google_api_key = os.getenv('gemini-api')
+# Google API-key
+load_dotenv() # Load .env file
+google_api_key = os.getenv('GEMINI_API')
 
 # Google Cloud Storage asetukset
 bucket_name = "training_data-1" 
