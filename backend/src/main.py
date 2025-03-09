@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from routes.users import router as user_router
 import os
 import re
 
@@ -54,3 +55,6 @@ def send_message(request: MessageRequest):
         return {"reply": formatted_text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Register user routes
+app.include_router(user_router, prefix="/users", tags=["users"])
