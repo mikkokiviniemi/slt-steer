@@ -3,7 +3,7 @@ cd backend
 python -m venv venv
 call venv\Scripts\activate.bat
 pip install fastapi uvicorn google-generativeai langchain_google_genai langchain_community langchain_text_splitters pypdf chromadb google-cloud-storage langchain-chroma PyPDF2 python-dotenv
-python setup_env.py
+python src\setup_env.py
 cd ../frontend
 npm install
 cd ..
