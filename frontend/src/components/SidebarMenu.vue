@@ -4,62 +4,78 @@
       <li><a href="#">Home</a></li>
       <li><a href="#">Settings</a></li>
       <li><a href="#">Logout</a></li>
+      <li><a href="#" @click.prevent="openPatientForm">Esitietolomake</a></li>
     </ul>
   </aside>
 </template>
-  
-  <script setup>
-  defineProps({
-    isOpen: Boolean
-  });
 
-  </script>
-  
-  <style scoped>
+<script setup>
+import { defineProps, defineEmits } from "vue";
+
+defineProps({
+  isOpen: Boolean
+});
+
+const emit = defineEmits(["open-patient-form"]);
+
+const openPatientForm = () => {
+  emit("open-patient-form");
+};
+</script>
+
+<style scoped>
+.sidebar {
+  position: fixed;
+  top: 90px; /* Match header height */
+  left: -250px;
+  height: calc(100% - 90px); /* Adjust height to avoid overlapping header */
+  background: var(--border-color);
+  color: var(--text-light);
+  padding: 30px 50px;
+  transition: left 0.2s;
+  font-size: 1rem;
+  font-family: 'Arial', sans-serif; /* Sama fontti kuin chat-ikkunan nappuloissa */
+}
+
+/* Responsiivisuus eri näyttöleveydellä */
+@media (max-width: 768px) {
   .sidebar {
-    position: fixed;
-    top: 60px;
-    left: -250px;
-    height: 100%;
-    background: var(--border-color); /* Light Blue (Not to be same as Header bar) */
-    color: var(--text-light); /* White */
-    padding-top: 30px;
-    padding-right: 50px;
-    padding-bottom: 10px;
-    padding-left: 50px;
-    transition: left 0.2s;
-    font-size: 1rem;
+    top: 80px;
+    height: calc(100% - 80px);
   }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Adds a 10px gap between each list item */ 
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    top: 70px;
+    height: calc(100% - 70px);
   }
-  a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    transition: color 0.2s ease-in-out;
-  }
-  a:hover {
-    color: #005b96;
-  }
-  .sidebar.open {
-    left: 0;
-  }
-  
-  .close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 18px;
-    cursor: pointer;
-    display: block;
-    margin-bottom: 10px;
-  }
-  </style>
-  
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  font-family: 'Arial', sans-serif;
+  transition: color 0.2s ease-in-out;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+a:hover {
+  color: #005b96;
+}
+
+.sidebar.open {
+  left: 0;
+}
+</style>
