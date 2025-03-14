@@ -1,4 +1,3 @@
-//npm install vue-i18n
 import { createI18n } from "vue-i18n";
 import fi from "./locales/fi.json";
 import en from "./locales/en.json";
