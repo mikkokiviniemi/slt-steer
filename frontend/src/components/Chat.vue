@@ -19,11 +19,11 @@
       <input 
         v-model="newMessage" 
         type="text" 
-        placeholder="Kirjoita kysymyksesi tähän..." 
+        :placeholder="$t('prompt')" 
         required
       >
-      <button type="submit">
-        Lähetä
+      <button type="submit">      
+        <p>{{ $t("send") }}</p>
       </button>
     </form>
   </div>
@@ -50,7 +50,7 @@ export default {
         const response = await axios.get("http://127.0.0.1:8000/api/data");
         this.mapping = response.data.data;
       } catch (error) {
-        console.error("Virhe haettaessa dataa:", error);
+        console.error(this.$t("data-error"), error);
       }
     },
     async sendMessage() {
@@ -67,8 +67,8 @@ export default {
         // Lisää palvelimen vastaus chattiin
         this.messages.push({ text: response.data.reply, from: "other" });
       } catch (error) {
-        console.error("Virhe viestin lähettämisessä:", error);
-        this.messages.push({ text: "Palvelimeen ei saada yhteyttä.", from: "other" });
+        console.error(this.$t("send-error"), error);
+        this.messages.push({text: this.$t("connection-error"), from: "other" });
       }
       
       // Tyhjennä syötekenttä
