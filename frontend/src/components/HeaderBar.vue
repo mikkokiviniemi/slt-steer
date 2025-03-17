@@ -22,10 +22,10 @@
         @change="changeLanguage"
       >
         <option value="fi">
-          <p>{{ $t("fin") }}</p>
+          {{ $t("fin") }}
         </option>
         <option value="en">
-          <p>{{ $t("eng") }}</p>
+          {{ $t("eng") }}
         </option>
       </select>
     </div>

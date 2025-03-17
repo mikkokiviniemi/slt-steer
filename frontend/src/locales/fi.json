@@ -1,11 +1,13 @@
 {
-"fin": "Suomi",
-"eng": "Englanti",
-"prompt": "Kirjoita kysymyksesi tähän...",
-"send": "Lähetä",
-"home": "Etusivu",
-"data-error": "Virhe haettaessa dataa:",
-"send-error": "Virhe viestin lähettämisessä:",
-"connection-error": "Palvelimeen ei saada yhteyttä.",
-"change": "Kieli vaihdettu:"
+  "fin": "Suomi",
+  "eng": "Englanti",
+  "prompt": "Kirjoita kysymyksesi tähän...",
+  "send": "Lähetä",
+  "home": "Etusivu",
+  "data-error": "Virhe haettaessa dataa:",
+  "send-error": "Virhe viestin lähettämisessä:",
+  "connection-error": "Palvelimeen ei saada yhteyttä.",
+  "change": "Kieli vaihdettu:",
+  "settings": "Asetukset",
+  "logout": "Kirjaudu ulos"
 }

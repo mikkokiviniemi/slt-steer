@@ -1,13 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
-from dataclasses import Field
-from motor.motor_asyncio import AsyncIOMotorClient
-import google.generativeai as genai
 import os
 import re
-genai.configure(api_key=os.environ['gemini-api'])
+
+# Importataan RAG-funktio
+from rag_cloud import get_rag_response
 
 app = FastAPI()
 
@@ -24,10 +22,11 @@ app.add_middleware(
 class MessageRequest(BaseModel):
     message: str
 
-# Gemini vastauksen käsittelyä luettavammaksi
+# Yksinkertainen HTML-formatoija, jos haluat säilyttää samaa logiikkaa
 def formatGeminiResponse(text: str) -> str:
+    # Lihavoi **merkinnät**
     text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
-
+    # Muunna markdown-listat HTML-listoiksi
     lines = text.split("\n")
     for i, line in enumerate(lines):
         match = re.match(r'^\*\s+(.*?)$', line)
@@ -76,14 +75,12 @@ def get_data():
 
 @app.post("/api/send")
 def send_message(request: MessageRequest):
-    """ Käsittelee viestin ja palauttaa vastauksen """
+    """ Käsittelee viestin ja palauttaa RAG-pohjaisen vastauksen """
     user_message = request.message
-    model = genai.GenerativeModel('gemini-1.5-flash-002')
-    
     try:
-        response = model.generate_content(user_message)
-        #print("Raw gemini response: ", response.text)
-        formatted_text = formatGeminiResponse(response.text)
+        # Käytetään RAG-ketjun vastausta
+        raw_response = get_rag_response(user_message)
+        formatted_text = formatGeminiResponse(raw_response)
         return {"reply": formatted_text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -6,10 +6,7 @@
         :key="index"
         :class="['message', message.from === 'self' ? 'self' : 'other']"
       >
-        <div 
-          class="message-content" 
-          v-html="message.text"
-        ></div>
+        <div class="message-content" v-html="message.text"/>
       </div>
     </div>
     <form 
@@ -19,7 +16,7 @@
       <input 
         v-model="newMessage" 
         type="text" 
-        :placeholder="$t('prompt')" 
+        :placeholder="$t('prompt')"
         required
       >
       <button type="submit">      
