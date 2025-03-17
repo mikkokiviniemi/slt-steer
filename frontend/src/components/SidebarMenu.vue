@@ -1,9 +1,9 @@
 <template>
   <aside :class="['sidebar', { open: isOpen }]">
     <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Settings</a></li>
-      <li><a href="#">Logout</a></li>
+      <li><a href="#">{{ $t("home") }}</a></li>
+      <li><a href="#">{{ $t("settings") }}</a></li>
+      <li><a href="#">{{ $t("logout") }}</a></li>
     </ul>
   </aside>
 </template>
