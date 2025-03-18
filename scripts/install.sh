@@ -7,4 +7,6 @@ pip install pytest fastapi uvicorn google-generativeai langchain_google_genai la
 python src/setup_env.py
 cd ../frontend
 npm install
+# Install vue-i18n for language support
+npm install vue-i18n@9
 cd ..
