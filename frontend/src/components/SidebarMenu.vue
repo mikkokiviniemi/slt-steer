@@ -6,7 +6,7 @@
         <a
           href="#"
           @click="settingsOpen = true"
-        >{{ $t("settings") }}</a>
+        >{{ $t("settings.title") }}</a>
       </li>
       <li><a href="#">{{ $t("logout") }}</a></li>
     </ul>

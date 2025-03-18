@@ -1,29 +1,34 @@
 <template>
   <div class="settings-section">
-    <h2>Modify Personal Info</h2>
+    <h2>{{ $t("modifyPersonalInfo.title") }}</h2>
     <input
       type="text"
-      placeholder="Name"
+      :placeholder="namePlaceholder"
     >
     <input
       type="number"
-      placeholder="Age"
+      :placeholder="agePlaceholder"
     >
     <select>
-      <option>Male</option>
-      <option>Female</option>
-      <option>Other</option>
+      <option>{{ $t("modifyPersonalInfo.male") }}</option>
+      <option>{{ $t("modifyPersonalInfo.female") }}</option>
+      <option>{{ $t("modifyPersonalInfo.other") }}</option>
     </select>
-    <button>Save</button>
+    <button>{{ $t("modifyPersonalInfo.save") }}</button>
   </div>
 </template>
-  
+
+<script setup>
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+// Käännökset placeholderille
+const namePlaceholder = computed(() => t('modifyPersonalInfo.name'));
+const agePlaceholder = computed(() => t('modifyPersonalInfo.age'));
+</script>
+
   <style scoped>
-  .settings-section {
-    padding: 20px;
-  }
-  input, select, button {
-    display: block;
-    margin: 10px 0;
-  }
+@import "@/assets/settingsstyles.css";
   </style>

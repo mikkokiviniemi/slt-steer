@@ -1,9 +1,13 @@
 <template>
   <div class="settings-section">
-    <h2>Analytics & Insights</h2>
-    <p>Usage Statistics</p>
+    <h2>{{ $t("analytics.title") }}</h2>
+    <p>{{ $t("analytics.usageStats") }}</p>
     <label>
-      <input type="checkbox"> Enable tracking
+      <input type="checkbox"> {{ $t("analytics.enableTracking") }}
     </label>
   </div>
 </template>
+
+<style scoped>
+@import "@/assets/settingsstyles.css";
+</style>

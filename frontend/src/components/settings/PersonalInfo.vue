@@ -1,15 +1,12 @@
 <template>
   <div class="settings-section">
-    <h2>Personal Info</h2>
-    <p><strong>Name:</strong> John Doe</p>
-    <p><strong>Age:</strong> 25</p>
-    <p><strong>Gender:</strong> Male</p>
+    <h2>{{ $t("personalInfo.title") }}</h2>
+    <p><strong>{{ $t("personalInfo.name") }}</strong> John Doe</p>
+    <p><strong>{{ $t("personalInfo.age") }}</strong> 25</p>
+    <p><strong>{{ $t("personalInfo.gender") }}</strong> {{ $t("modifyPersonalInfo.male") }}</p>
   </div>
 </template>
   
   <style scoped>
-  .settings-section {
-    padding: 20px;
-    font-family: 'Inter', sans-serif;
-  }
+@import "@/assets/settingsstyles.css";
   </style>

@@ -6,7 +6,10 @@
         :key="index"
         :class="['message', message.from === 'self' ? 'self' : 'other']"
       >
-        <div class="message-content" v-html="message.text"/>
+        <div
+          class="message-content"
+          v-html="message.text"
+        />
       </div>
     </div>
     <form 

@@ -1,38 +1,44 @@
 <template>
-    <div class="modal-overlay" @click.self="closeModal">
-      <div class="modal-content">
-        <button class="close-btn" @click="closeModal">
-          &times;
-        </button>
-        <h2>Settings</h2>
+  <div
+    class="modal-overlay"
+    @click.self="closeModal"
+  >
+    <div class="modal-content">
+      <button
+        class="close-btn"
+        @click="closeModal"
+      >
+        &times;
+      </button>
+      <h2>{{ $t("settings.title") }}</h2>
   
-        <div class="settings-container">
-          <!-- Left Column: Settings Menu -->
-          <div class="settings-menu">
-            <ul>
-              <li
-                v-for="section in sections"
-                :key="section.key"
-                :class="{ active: activeSection === section.key }"
-                @click="activeSection = section.key"
-              >
-                {{ section.label }}
-              </li>
-            </ul>
-          </div>
+      <div class="settings-container">
+        <!-- Left Column: Settings Menu -->
+        <div class="settings-menu">
+          <ul>
+            <li
+              v-for="section in sections"
+              :key="section.key"
+              :class="{ active: activeSection === section.key }"
+              @click="activeSection = section.key"
+            >
+              {{ $t(`settings.${section.key}`) }}
+            </li>
+          </ul>
+        </div>
   
-          <!-- Right Column: Settings Content -->
-          <div class="settings-content">
-            <PersonalInfo v-if="activeSection === 'personalInfo'" />
-            <ModifyPersonalInfo v-if="activeSection === 'modifyPersonalInfo'" />
-            <UserLogin v-if="activeSection === 'login'" />
-            <AccessibilitySettings v-if="activeSection === 'accessibility'" />
-            <AnalyticsInsights v-if="activeSection === 'analytics'" />
-          </div>
+        <!-- Right Column: Settings Content -->
+        <div class="settings-content">
+          <PersonalInfo v-if="activeSection === 'personalInfo'" />
+          <ModifyPersonalInfo v-if="activeSection === 'modifyPersonalInfo'" />
+          <UserLogin v-if="activeSection === 'login'" />
+          <AccessibilitySettings v-if="activeSection === 'accessibility'" />
+          <AnalyticsInsights v-if="activeSection === 'analytics'" />
         </div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
   
   <script setup>
   import { ref } from "vue";
@@ -50,12 +56,12 @@
   };
   
   const sections = [
-    { key: "personalInfo", label: "Personal Info" },
-    { key: "modifyPersonalInfo", label: "Modify Personal Info" },
-    { key: "login", label: "Login" },
-    { key: "accessibility", label: "Accessibility" },
-    { key: "analytics", label: "Analytics & Insights" },
-  ];
+  { key: "personalInfo" },
+  { key: "modifyPersonalInfo" },
+  { key: "login" },
+  { key: "accessibility" },
+  { key: "analytics" },
+];
   </script>
   
   <style scoped>
