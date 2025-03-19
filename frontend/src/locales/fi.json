@@ -1,0 +1,52 @@
+{
+  "fin": "Suomi",
+  "eng": "Englanti",
+  "prompt": "Kirjoita kysymyksesi tähän...",
+  "send": "Lähetä",
+  "home": "Etusivu",
+  "data-error": "Virhe haettaessa dataa:",
+  "send-error": "Virhe viestin lähettämisessä:",
+  "connection-error": "Palvelimeen ei saada yhteyttä.",
+  "change": "Kieli vaihdettu:",
+  "logout": "Kirjaudu ulos",
+  "settings": {
+    "title": "Asetukset",
+    "personalInfo": "Henkilötiedot",
+    "modifyPersonalInfo": "Muokkaa henkilötietoja",
+    "login": "Kirjaudu sisään",
+    "accessibility": "Saavutettavuus",
+    "analytics": "Analytiikka"
+  },
+  "accessibility" : {
+    "title" : "Saavutettavuusasetukset",
+    "screenReader" : "Ota ruudunlukuohjelma käyttöön",
+    "enable" : "Ota käyttöön"
+  },
+  "analytics": {
+    "title": "Analytiikka ja tiedot",
+    "usageStats": "Käyttötiedot",
+    "enableTracking": "Salli seuranta"
+  },
+  "modifyPersonalInfo": {
+    "title": "Muokkaa henkilötietoja",
+    "name": "Nimi",
+    "age": "Ikä",
+    "gender": "Sukupuoli",
+    "male": "Mies",
+    "female": "Nainen",
+    "other": "Muu",
+    "save": "Tallenna"
+  },
+  "personalInfo": {
+    "title": "Henkilötiedot",
+    "name": "Nimi",
+    "age": "Ikä",
+    "gender": "Sukupuoli"
+  },
+  "login": {
+    "title": "Kirjaudu sisään",
+    "username": "Käyttäjätunnus",
+    "password": "Salasana",
+    "logIn": "Kirjaudu sisään"
+  }
+}

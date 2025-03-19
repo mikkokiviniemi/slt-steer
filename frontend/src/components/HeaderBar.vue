@@ -18,14 +18,14 @@
 
     <div class="language-selector">
       <select 
-        v-model="selectedLanguage" 
+        v-model="locale" 
         @change="changeLanguage"
       >
         <option value="fi">
-          Finnish
+          {{ $t("fin") }}
         </option>
         <option value="en">
-          English
+          {{ $t("eng") }}
         </option>
       </select>
     </div>
@@ -33,24 +33,32 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { watch } from "vue";
 
 defineProps({
   "isSidebarOpen" : Boolean
 }); // Prop for sidebar state
 
 const emit = defineEmits(["toggle-sidebar"]);
-
+const { locale } = useI18n();
 const handleSidebarToggle = () => {
   emit("toggle-sidebar");
 };
 
-const selectedLanguage = ref("fi");
-
-const changeLanguage = () => {
-    console.log("Language changed to:", selectedLanguage.value);    
-    // Add logic to change the language globally in your app if needed
+const changeLanguage = (event) => {
+  const newLocale = event.target.value;
+  locale.value = newLocale;
+  localStorage.setItem("selectedLanguage", newLocale);
+  window.location.reload();
+  //console.log("Kieli vaihdettu", locale.value);  <- Rivi ehkä turha?
+  // Add logic to change the language globally in your app if needed
 }
+
+watch(locale, (newLocale) => {
+  localStorage.setItem("selectedLanguage", newLocale);
+  location.reload(); // Jeesusteippiratkaisu; päivittää koko sivun
+});
 
 </script>
 
@@ -58,9 +66,9 @@ const changeLanguage = () => {
 .header {
     display: flex;
     align-items: center;
-    justify-content: space-between; /*Pushes items to left, center, right*/
-    height: 60px;
-    padding: 10px 20px;
+    justify-content: space-between; /* Pushes items to left, center, right */
+    height: 90px; /* Increased height */
+    padding: 15px 25px; /* Adjusted padding */
     background-color: var(--primary-color);
     color: var(--text-light);
 }
@@ -69,28 +77,26 @@ const changeLanguage = () => {
   background: none;
   border: none;
   color: var(--text-light);
-  font-size: 20px;
+  font-size: 24px; /* Increased icon size */
   cursor: pointer;
-  padding: 10px;
+  padding: 15px;
 }
 
-.logo-container
-{
-  flex: 1; /*Allows logo to be centered*/
+.logo-container {
+  flex: 1; /* Allows logo to be centered */
   display: flex;
   justify-content: center;
 }
 
-.logo
-{
+.logo {
   width: auto;
-  height: 60px; /*Adjust size as needed*/
+  height: 80px; /* Increased logo size */
+  max-height: 100%;
 }
 
-.language-selector select 
-{
-  padding: 5px;
-  font-size: 14px;
+.language-selector select {
+  padding: 8px;
+  font-size: 16px;
   background: var(--background-dark);
   color: var(--text-light);
   border: 1px solid var(--border-color);
@@ -112,52 +118,42 @@ const changeLanguage = () => {
   color: var(--primary-color);
 }
 
-
 /* Responsive Design */
-@media (max-width: 768px) 
-{
-  .header 
-  {
+@media (max-width: 768px) {
+  .header {
+    height: 80px; /* Slightly smaller for tablets */
+    padding: 12px;
+  }
+
+  .sidebar-toggle {
+    font-size: 22px;
+  }
+
+  .logo {
+    height: 70px;
+  }
+
+  .language-selector select {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    height: 70px; /* Smaller header for mobile */
     padding: 10px;
   }
 
   .sidebar-toggle {
-      font-size: 18px;
-    }
-
-  .logo 
-  {
-    width: 100px;
-    max-height: 40px;
+    font-size: 20px;
   }
 
-  .language-selector select 
-  {
+  .logo {
+    height: 60px;
+  }
+
+  .language-selector select {
     font-size: 12px;
   }
 }
-
-@media (max-width: 480px) 
-{
-  .header 
-  {
-    padding: 8px;
-  }
-
-  .sidebar-toggle {
-      font-size: 16px;
-    }
-
-  .logo 
-  {
-    width: 100px;
-    max-height: 40px;
-  }
-
-  .language-selector select 
-  {
-    font-size: 12px;
-  }
-}
-
 </style>

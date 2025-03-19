@@ -1,83 +1,102 @@
 <template>
   <div class="chat-container">
+    <!-- Esitietolomake-modal -->
+    <PatientForm v-if="showForm" @close="closePatientForm" />
+
     <div class="messages">
-      <div
-        v-for="(message, index) in messages"
-        :key="index"
-        :class="['message', message.from === 'self' ? 'self' : 'other']"
-      >
-        <div 
-          class="message-content" 
-          v-html="message.text"
-        ></div>
+      <!-- Tervetuloviesti, joka näytetään vain kerran ensimmäisenä viestinä -->
+      <div v-if="welcomeMessageDisplayed" class="message other">
+        <div class="message-content">
+          Hei, olen sydänterveytesi assistentti ja haluan auttaa sinua askarruttavissa asioissa ja edistää terveyttäsi. 
+          Aluksi haluaisin tietää muutamia esitietoja. 
+          <a href="#" @click.prevent="openPatientForm">Täytä esitietolomake</a>. 
+          Voit myös palata täydentämään esitietoja myöhemmin sivupaneelista.
+        </div>
+      </div>
+
+      <!-- Käyttäjän ja botin viestit -->
+      <div v-for="(message, index) in messages" :key="index" :class="['message', message.from === 'self' ? 'self' : 'other']">
+        <div class="message-content">
+          <span v-html="message.text"></span>
+        </div>
       </div>
     </div>
-    <form 
-      class="input-area" 
-      @submit.prevent="sendMessage"
-    >
-      <input 
-        v-model="newMessage" 
-        type="text" 
-        placeholder="Kirjoita kysymyksesi tähän..." 
-        required
-      >
-      <button type="submit">
-        Lähetä
-      </button>
+
+    <form class="input-area" @submit.prevent="sendMessage">
+      <input v-model="newMessage" type="text" placeholder="Kirjoita kysymyksesi tähän..." required>
+      <button type="submit">Lähetä</button>
+
     </form>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import PatientForm from "./PatientForm.vue";
 
 export default {
   name: "ChatComponent",
+  components: {
+    PatientForm
+  },
+  props: {
+    externalShowForm: Boolean
+  },
   data() {
     return {
-      mapping: [],
+      userId: "user123",
       messages: [],
-      newMessage: ""
+      newMessage: "",
+      showForm: false,
+      welcomeMessageDisplayed: true, // Varmistaa, että tervetuloviesti on aina ensimmäinen
     };
   },
-  mounted() {
-    this.fetchMapping();
+  watch: {
+    externalShowForm(newVal) {
+      this.showForm = newVal;
+    }
   },
   methods: {
+    openPatientForm() {
+      this.showForm = true;
+      this.$emit("update:externalShowForm", true);
+    },
+    closePatientForm() {
+      this.showForm = false;
+      this.$emit("update:externalShowForm", false);
+
     async fetchMapping() {
       try {
         const response = await axios.get("http://127.0.0.1:8000/api/data");
         this.mapping = response.data.data;
       } catch (error) {
-        console.error("Virhe haettaessa dataa:", error);
+        console.error(this.$t("data-error"), error);
       }
     },
     async sendMessage() {
       if (this.newMessage.trim() === "") return;
-      
+
       // Lisää käyttäjän viesti chattiin
       this.messages.push({ text: this.newMessage, from: "self" });
-      
+
       try {
         const response = await axios.post("http://127.0.0.1:8000/api/send", {
           message: this.newMessage
         });
-        
+
         // Lisää palvelimen vastaus chattiin
         this.messages.push({ text: response.data.reply, from: "other" });
       } catch (error) {
-        console.error("Virhe viestin lähettämisessä:", error);
-        this.messages.push({ text: "Palvelimeen ei saada yhteyttä.", from: "other" });
+        console.error(this.$t("send-error"), error);
+        this.messages.push({text: this.$t("connection-error"), from: "other" });
       }
-      
+
       // Tyhjennä syötekenttä
       this.newMessage = "";
     }
   }
 };
 </script>
-
 
 
 <style scoped>
