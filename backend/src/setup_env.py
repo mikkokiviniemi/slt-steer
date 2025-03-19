@@ -17,6 +17,21 @@ def setup_api_key():
         set_key(dotenv_path, 'GEMINI_API', os.getenv('GEMINI_API'))
         print("")
 
+def setup_mongo_uri():
+    load_dotenv(dotenv_path)
+    if not os.getenv('MONGO_URI'):
+        MONGO_URI = input("Enter MONGO_URI: ")
+        set_key(dotenv_path, 'MONGO_URI', MONGO_URI)
+        print("") # Empty prints for better readability
+        print("MONGO_URI saved.")
+        print("")
+    else:
+        print("") # Empyty prints for better readability
+        print("MONGO_URI is already defined.")
+        set_key(dotenv_path, 'MONGO_URI', os.getenv('MONGO_URI'))
+        print("")
+
+
 def setup_google_credential_path():
     load_dotenv(dotenv_path)
     if not os.getenv('GOOGLE_APPLICATION_CREDENTIALS'):
@@ -35,3 +50,4 @@ def setup_google_credential_path():
 if __name__ == "__main__":
     setup_api_key()
     setup_google_credential_path()
+    setup_mongo_uri()
