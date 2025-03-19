@@ -4,6 +4,12 @@
       <li><a href="#">Home</a></li>
       <li><a href="#">Settings</a></li>
       <li><a href="#">Logout</a></li>
+      <li>
+        <router-link to="/user">
+          User Profile
+        </router-link>
+      </li>
+
       <li><a href="#" @click.prevent="openPatientForm">Esitietolomake</a></li>
     </ul>
   </aside>
