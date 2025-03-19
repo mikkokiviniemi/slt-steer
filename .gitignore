@@ -34,3 +34,7 @@ debug.log
 # OS/System Files
 .DS_Store
 Thumbs.db
+
+#db_cache
+my_folder/*
+!my_folder/.gitkeep
