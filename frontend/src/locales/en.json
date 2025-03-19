@@ -1,0 +1,52 @@
+{
+"fin": "Finnish",
+"eng": "English",
+"prompt": "Write your question here...",
+"send": "Send",
+"home": "Home",
+"data-error": "Error while getting data:",
+"send-error": "Error while sending message:",
+"connection-error": "Error: Cannot connect to server.",
+"change": "Language changed:",
+"logout":"Logout",
+"settings": {
+    "title": "Settings",
+    "personalInfo": "Personal Info",
+    "modifyPersonalInfo": "Modify Personal Info",
+    "login": "Login",
+    "accessibility": "Accessibility",
+    "analytics": "Analytics & Insights"
+  },
+  "accessibility" : {
+    "title" : "Accessibility Settings",
+    "screenReader" : "Enable screen reader support",
+    "enable" : "Enable"
+  },
+  "analytics": {
+    "title": "Analytics & Insights",
+    "usageStats": "Usage Statistics",
+    "enableTracking": "Enable tracking"
+  },
+  "modifyPersonalInfo": {
+    "title": "Modify Personal Info",
+    "name": "Name",
+    "age": "Age",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "save": "Save"
+  },
+  "personalInfo": {
+    "title": "Personal Info",
+    "name": "Name",
+    "age": "Age",
+    "gender": "Gender"
+  },
+  "login": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "logIn": "Log In"
+  }
+}

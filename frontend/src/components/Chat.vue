@@ -25,6 +25,7 @@
     <form class="input-area" @submit.prevent="sendMessage">
       <input v-model="newMessage" type="text" placeholder="Kirjoita kysymyksesi tähän..." required>
       <button type="submit">Lähetä</button>
+
     </form>
   </div>
 </template>
@@ -63,6 +64,14 @@ export default {
     closePatientForm() {
       this.showForm = false;
       this.$emit("update:externalShowForm", false);
+
+    async fetchMapping() {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/data");
+        this.mapping = response.data.data;
+      } catch (error) {
+        console.error(this.$t("data-error"), error);
+      }
     },
     async sendMessage() {
       if (this.newMessage.trim() === "") return;
@@ -78,8 +87,8 @@ export default {
         // Lisää palvelimen vastaus chattiin
         this.messages.push({ text: response.data.reply, from: "other" });
       } catch (error) {
-        console.error("Virhe viestin lähettämisessä:", error);
-        this.messages.push({ text: "Palvelimeen ei saada yhteyttä.", from: "other" });
+        console.error(this.$t("send-error"), error);
+        this.messages.push({text: this.$t("connection-error"), from: "other" });
       }
 
       // Tyhjennä syötekenttä
