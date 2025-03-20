@@ -1,16 +1,15 @@
 <template>
   <aside :class="['sidebar', { open: isOpen }]">
     <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Settings</a></li>
-      <li><a href="#">Logout</a></li>
+      <li><a href="#"><p>{{ $t("home") }}</p></a></li>
+      <li><a href="#" @click="settingsOpen = true" >{{ $t("settings.title") }}</a></li>
+      <li><a href="#">{{ $t("logout") }}</a></li>
       <li>
         <router-link to="/user">
           User Profile
         </router-link>
       </li>
-
-      <li><a href="#" @click.prevent="openPatientForm">Esitietolomake</a></li>
+      <li><a href="#" @click.prevent="openPatientForm">{{ $t("preliminaryForm") }}</a></li>
     </ul>
   </aside>
 

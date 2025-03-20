@@ -9,6 +9,10 @@
   "connection-error": "Palvelimeen ei saada yhteyttä.",
   "change": "Kieli vaihdettu:",
   "logout": "Kirjaudu ulos",
+  "preliminaryForm":"Esitietolomake",
+  "welcomeMessage": "Hei, olen sydänterveytesi assistentti ja haluan auttaa sinua askarruttavissa asioissa ja edistää terveyttäsi. Aluksi haluaisin tietää muutamia esitietoja.",
+  "fillForm": "Täytä esitietolomake",
+  "returnLater": "Voit myös palata täydentämään esitietoja myöhemmin sivupaneelista.",
   "settings": {
     "title": "Asetukset",
     "personalInfo": "Henkilötiedot",
@@ -48,5 +52,27 @@
     "username": "Käyttäjätunnus",
     "password": "Salasana",
     "logIn": "Kirjaudu sisään"
+  },
+  "patientForm": {
+    "title": "Esitietolomake",
+    "weight": "Paino",
+    "height": "Pituus",
+    "conditions": "Taustasairaudet",
+    "conditionsPlaceholder": "Erottele pilkulla",
+    "avgBloodPressure": "Keskimääräiset verenpaineet",
+    "riskFactors": "Riskitekijät",
+    "riskFactorsPlaceholder": "Tupakointi, diabetes, kohonneet kolesterolit, verenpainetauti, sukurasite",
+    "alcoholUse": "Alkoholin käyttö",
+    "allergies": "Allergiat",
+    "allergiesPlaceholder": "Erottele pilkulla",
+    "activity": "Liikkumistottumukset ja rajoitteet",
+    "medications": "Lääkitys",
+    "medicationsPlaceholder": "Erottele pilkulla",
+    "heartProcedures": "Tehdyt sydäntoimenpiteet",
+    "heartProceduresPlaceholder": "Erottele pilkulla",
+    "save": "Tallenna",
+    "skip": "Ohita",
+    "saveSuccess": "Esitiedot tallennettu!",
+    "saveError": "Virhe tallennuksessa:"
   }
 }
