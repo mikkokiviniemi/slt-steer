@@ -11,6 +11,10 @@
 "logout":"Logout",
 "user_saved": "User information saved!",
 "user_id": "Your User ID is:",
+"preliminaryForm":"Preliminary form",
+"welcomeMessage": "Hi, I am your heart health assistant and I want to help you with your concerns and promote your health. First, I would like to know some preliminary information.",
+"fillForm": "Fill out the preliminary form",
+"returnLater": "You can also return to complete the preliminary information later from the side panel.",
 "settings": {
     "title": "Settings",
     "personalInfo": "Personal Info",
@@ -50,5 +54,27 @@
     "username": "Username",
     "password": "Password",
     "logIn": "Log In"
+  },
+  "patientForm": {
+    "title": "Preliminary Form",
+    "weight": "Weight",
+    "height": "Height",
+    "conditions": "Medical Conditions",
+    "conditionsPlaceholder": "Separate with commas",
+    "avgBloodPressure": "Average Blood Pressure",
+    "riskFactors": "Risk Factors",
+    "riskFactorsPlaceholder": "Smoking, diabetes, high cholesterol, hypertension, family history",
+    "alcoholUse": "Alcohol Use",
+    "allergies": "Allergies",
+    "allergiesPlaceholder": "Separate with commas",
+    "activity": "Physical Activity",
+    "medications": "Medications",
+    "medicationsPlaceholder": "Separate with commas",
+    "heartProcedures": "Heart Procedures",
+    "heartProceduresPlaceholder": "Separate with commas",
+    "save": "Save",
+    "skip": "Skip",
+    "saveSuccess": "Preliminary information saved!",
+    "saveError": "Error saving preliminary information:"
   }
 }

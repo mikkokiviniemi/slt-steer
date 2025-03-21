@@ -150,81 +150,152 @@
           console.error("Virhe tallennuksessa:", error);
         }
       },
-      closeForm() {
+    };
+  },
+  methods: {
+    async submitForm() {
+      try {
+        const formattedData = {
+          user_id: this.userId,
+          weight: Number(this.patient.weight),
+          height: Number(this.patient.height),
+          conditions: this.patient.conditions.split(",").map((item) => item.trim()),
+          avg_blood_pressure: this.patient.avg_blood_pressure,
+          risk_factors: this.patient.risk_factors.split(",").map((item) => item.trim()),
+          alcohol_use: this.patient.alcohol_use,
+          allergies: this.patient.allergies.split(",").map((item) => item.trim()),
+          activity: this.patient.activity,
+          medications: this.patient.medications.split(",").map((item) => item.trim()),
+          heart_procedures: this.patient.heart_procedures
+            .split(",")
+            .map((item) => item.trim()),
+        };
+
+        await fetch("http://127.0.0.1:8000/api/patient", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formattedData),
+        });
+
+        alert(this.$t("patientForm.saveSuccess")); // Lokalisoitu ilmoitus
         this.$emit("close");
+      } catch (error) {
+        console.error(this.$t("patientForm.saveError"), error); // Lokalisoitu virheilmoitus
       }
-    }
-  };
-  </script>
-  
-  <style scoped>
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
+    },
+    closeForm() {
+      this.$emit("close");
+    },
+  },
+};
+</script>
+
+<style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  position: relative;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 91, 150, 0.2);
+  border: 2px solid #005b96;
+  font-family: "Arial", sans-serif;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #333;
+}
+
+.close-btn:hover {
+  color: red;
+}
+
+h2 {
+  text-align: center;
+  color: #005b96;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #333;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button[type="submit"] {
+  background-color: #005b96;
+  color: white;
+}
+
+button[type="submit"]:hover {
+  background-color: #004080;
+}
+
+button[type="button"] {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+button[type="button"]:hover {
+  background-color: #bdbdbd;
+}
+
+/* Responsiivisuus */
+@media (max-width: 600px) {
   .modal {
-    position: relative;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    max-width: 600px;
-    width: 100%;
-    box-shadow: 0 4px 10px rgba(0, 91, 150, 0.2);
-    border: 2px solid #005b96;
-    font-family: 'Arial', sans-serif;
+    max-width: 90%;
   }
-  
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    color: #333;
-  }
-  
-  .close-btn:hover {
-    color: red;
-  }
-  
-  h2 {
-    text-align: center;
-    color: #005b96;
-  }
-  
-  label {
-    display: block;
-    font-weight: bold;
-    margin-top: 10px;
-    color: #333;
-  }
-  
+
   input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    box-sizing: border-box;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    padding: 8px;
   }
-  
-  .form-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-  }
-  
+
   button {
     padding: 10px 20px;
     border: none;
@@ -273,5 +344,5 @@
       font-size: 0.9rem;
     }
   }
-  </style>
-  
+}
+</style>
