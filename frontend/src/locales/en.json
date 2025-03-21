@@ -9,6 +9,8 @@
 "connection-error": "Error: Cannot connect to server.",
 "change": "Language changed:",
 "logout":"Logout",
+"user_saved": "User information saved!",
+"user_id": "Your User ID is:",
 "preliminaryForm":"Preliminary form",
 "welcomeMessage": "Hi, I am your heart health assistant and I want to help you with your concerns and promote your health. First, I would like to know some preliminary information.",
 "fillForm": "Fill out the preliminary form",

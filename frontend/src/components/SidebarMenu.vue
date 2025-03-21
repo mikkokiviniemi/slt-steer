@@ -2,14 +2,19 @@
   <aside :class="['sidebar', { open: isOpen }]">
     <ul>
       <li><a href="#"><p>{{ $t("home") }}</p></a></li>
-      <li><a href="#" @click="settingsOpen = true" >{{ $t("settings.title") }}</a></li>
+      <li>
+        <a
+          href="#"
+          @click="settingsOpen = true"
+        >{{ $t("settings.title") }}</a>
+      </li>
       <li><a href="#">{{ $t("logout") }}</a></li>
       <li>
-        <router-link to="/user">
-          User Profile
-        </router-link>
+        <a
+          href="#"
+          @click.prevent="openPatientForm"
+        >Esitietolomake</a>
       </li>
-      <li><a href="#" @click.prevent="openPatientForm">{{ $t("preliminaryForm") }}</a></li>
     </ul>
   </aside>
 
@@ -34,15 +39,6 @@ const emit = defineEmits(["open-patient-form"]);
 const openPatientForm = () => {
   emit("open-patient-form");
 };
-
-// Temporarily commented out
-/*
-const emit = defineEmits(["toggle-sidebar"]);
-
-const handleSidebarToggle = () => {
-  emit("toggle-sidebar");
-};
-*/
 
 const settingsOpen = ref(false);
 </script>

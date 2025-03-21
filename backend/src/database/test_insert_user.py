@@ -1,80 +1,70 @@
 import asyncio
-from db import users_collection  # Import the users_collection from db.py
 import logging
+import httpx
+from fastapi import FastAPI
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Async function to insert new test users
-async def insert_test_users():
-    test_users = [
-        {
-            "patientId": "P2001",
-            "firstName": "Aino",
-            "lastName": "Korhonen",
-            "dateOfBirth": "1992-08-12",
-            "languageSettings": {
-                "preferredLanguage": "Finnish",
-                "availableLanguages": ["Finnish", "English"]
-            },
-            "weight": 58,
-            "height": 165,
-            "chatHistory": []
-        },
-        {
-            "patientId": "P2002",
-            "firstName": "Elias",
-            "lastName": "Mäkinen",
-            "dateOfBirth": "1989-03-27",
-            "languageSettings": {
-                "preferredLanguage": "Finnish",
-                "availableLanguages": ["Finnish", "Swedish"]
-            },
-            "weight": 80,
-            "height": 180,
-            "chatHistory": []
-        },
-        {
-            "patientId": "P2003",
-            "firstName": "Sophia",
-            "lastName": "Anderson",
-            "dateOfBirth": "1995-06-15",
-            "languageSettings": {
-                "preferredLanguage": "English",
-                "availableLanguages": ["English"]
-            },
-            "weight": 68,
-            "height": 170,
-            "chatHistory": []
-        },
-        {
-            "patientId": "P2004",
-            "firstName": "Matti",
-            "lastName": "Virtanen",
-            "dateOfBirth": "1982-11-05",
-            "languageSettings": {
-                "preferredLanguage": "Finnish",
-                "availableLanguages": ["Finnish"]
-            },
-            "weight": 90,
-            "height": 185,
-            "chatHistory": []
-        }
-    ]
+API_URL = "http://localhost:8000/users/"  
 
-    inserted_count = 0
+# Test users
+test_users = [
+    {
+        "weight": 60,
+        "height": 165,
+        "conditions": ["asthma"],
+        "avg_blood_pressure": "110/70",
+        "risk_factors": [],
+        "alcohol_use": "none",
+        "allergies": ["dust"],
+        "activity": "high",
+        "medications": ["inhalers"],
+        "heart_procedures": ["none"]
+    },
+    {
+        "weight": 85,
+        "height": 180,
+        "conditions": ["hypertension", "diabetes"],
+        "avg_blood_pressure": "130/85",
+        "risk_factors": ["obesity", "smoking"],
+        "alcohol_use": "low",
+        "allergies": ["pollen"],
+        "activity": "moderate",
+        "medications": ["metformin", "beta-blockers"],
+        "heart_procedures": ["angioplasty"]
+    },
+    {
+        "weight": 70,
+        "height": 175,
+        "conditions": [],
+        "avg_blood_pressure": "120/80",
+        "risk_factors": [],
+        "alcohol_use": "moderate",
+        "allergies": [],
+        "activity": "active",
+        "medications": []
+    }
+]
 
-    for user in test_users:
-        existing_user = await users_collection.find_one({"patientId": user["patientId"]})
-        if existing_user:
-            logger.info(f"🔄 User {user['patientId']} already exists. Skipping insert.")
-        else:
-            await users_collection.insert_one(user)
-            logger.info(f"✅ Inserted new user {user['patientId']}.")
-            inserted_count += 1
+async def test_create_users():
+    async with httpx.AsyncClient() as client:
+        inserted_count = 0
+        for user in test_users:
+            try:
+                response = await client.post(API_URL, json=user)
+                if response.status_code == 200:
+                    user_id = response.json().get("user_id")
+                    logger.info(f"✅ User created successfully with ID: {user_id}")
+                    inserted_count += 1
+                else:
+                    logger.warning(f"⚠️ Failed to create user. Status: {response.status_code}, Detail: {response.text}")
+            except Exception as e:
+                logger.error(f"❌ Error sending request: {e}")
 
-    logger.info(f"🚀 {inserted_count} new users added. Existing users were kept.")
+        logger.info(f"🚀 {inserted_count} users were successfully added via API.")
 
-# Run the insert function
-asyncio.run(insert_test_users())
+# Run the test function
+if __name__ == "__main__":
+    asyncio.run(test_create_users())

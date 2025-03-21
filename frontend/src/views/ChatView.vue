@@ -10,7 +10,10 @@
       @open-patient-form="openPatientForm"
     />
     <main>
-      <Chat :externalShowForm="showForm" @update:externalShowForm="showForm = $event" />
+      <Chat
+        :external-show-form="showForm"
+        @update:external-show-form="showForm = $event"
+      />
     </main>
   </div>
 </template>

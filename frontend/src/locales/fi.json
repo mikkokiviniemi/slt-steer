@@ -9,6 +9,8 @@
   "connection-error": "Palvelimeen ei saada yhteyttä.",
   "change": "Kieli vaihdettu:",
   "logout": "Kirjaudu ulos",
+  "user_saved": "Esitiedot tallennettu!",
+  "user_id": "Käyttäjätunnuksesi on:",
   "preliminaryForm":"Esitietolomake",
   "welcomeMessage": "Hei, olen sydänterveytesi assistentti ja haluan auttaa sinua askarruttavissa asioissa ja edistää terveyttäsi. Aluksi haluaisin tietää muutamia esitietoja.",
   "fillForm": "Täytä esitietolomake",
