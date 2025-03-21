@@ -2,7 +2,12 @@
   <aside :class="['sidebar', { open: isOpen }]">
     <ul>
       <li><a href="#"><p>{{ $t("home") }}</p></a></li>
-      <li><a href="#" @click="settingsOpen = true" >{{ $t("settings.title") }}</a></li>
+      <li>
+        <a
+          href="#"
+          @click="settingsOpen = true"
+        >{{ $t("settings.title") }}</a>
+      </li>
       <li><a href="#">{{ $t("logout") }}</a></li>
       <li>
         <a

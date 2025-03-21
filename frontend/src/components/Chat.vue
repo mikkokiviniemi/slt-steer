@@ -14,7 +14,10 @@
       >
         <div class="message-content">
           {{ $t("welcomeMessage") }}
-          <a href="#" @click.prevent="openPatientForm">{{ $t("fillForm") }}</a>.
+          <a
+            href="#"
+            @click.prevent="openPatientForm"
+          >{{ $t("fillForm") }}</a>.
           {{ $t("returnLater") }}
         </div>
       </div>
@@ -25,17 +28,23 @@
         :key="index"
         :class="['message', message.from === 'self' ? 'self' : 'other']"
       >
-        <div class="message-content" v-html="message.text"></div>
+        <div
+          class="message-content"
+          v-html="message.text"
+        />
       </div>
     </div>
 
-    <form class="input-area" @submit.prevent="sendMessage">
+    <form
+      class="input-area"
+      @submit.prevent="sendMessage"
+    >
       <input
         v-model="newMessage"
         type="text"
         :placeholder="$t('prompt')"
         required
-      />
+      >
       <button type="submit">
         <p>{{ $t("send") }}</p>
       </button>

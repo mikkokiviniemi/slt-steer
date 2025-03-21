@@ -8,71 +8,71 @@
       >
         ✖
       </button>
-  
-      <h2>Esitietolomake</h2>
+
+      <h2>{{ $t("patientForm.title") }}</h2>
       <form @submit.prevent="submitForm">
-        <label>Paino (kg):</label>
+        <label>{{ $t("patientForm.weight") }} (kg):</label>
         <input
           v-model="patient.weight"
           type="number"
           required
         >
-  
-        <label>Pituus (cm):</label>
+
+        <label>{{ $t("patientForm.height") }} (cm):</label>
         <input
           v-model="patient.height"
           type="number"
           required
         >
-  
-        <label>Taustasairaudet:</label>
+
+        <label>{{ $t("patientForm.conditions") }}:</label>
         <input
           v-model="patient.conditions"
-          placeholder="Erottele pilkulla"
+          :placeholder="$t('patientForm.conditionsPlaceholder')"
         >
-  
-        <label>Keskimääräiset verenpaineet:</label>
+
+        <label>{{ $t("patientForm.avgBloodPressure") }}:</label>
         <input v-model="patient.avg_blood_pressure">
-  
-        <label>Riskitekijät:</label>
+
+        <label>{{ $t("patientForm.riskFactors") }}:</label>
         <input
           v-model="patient.risk_factors"
-          placeholder="Tupakointi, diabetes, kohonneet kolesterolit, verenpainetauti, sukurasite"
+          :placeholder="$t('patientForm.riskFactorsPlaceholder')"
         >
-  
-        <label>Alkoholin käyttö:</label>
+
+        <label>{{ $t("patientForm.alcoholUse") }}:</label>
         <input v-model="patient.alcohol_use">
-  
-        <label>Allergiat:</label>
+
+        <label>{{ $t("patientForm.allergies") }}:</label>
         <input
           v-model="patient.allergies"
-          placeholder="Erottele pilkulla"
+          :placeholder="$t('patientForm.allergiesPlaceholder')"
         >
-  
-        <label>Liikkumistottumukset ja rajoitteet:</label>
+
+        <label>{{ $t("patientForm.activity") }}:</label>
         <input v-model="patient.activity">
-  
-        <label>Lääkitys:</label>
+
+        <label>{{ $t("patientForm.medications") }}:</label>
         <input
           v-model="patient.medications"
-          placeholder="Erottele pilkulla"
+          :placeholder="$t('patientForm.medicationsPlaceholder')"
         >
-  
-        <label>Tehdyt sydäntoimenpiteet:</label>
+
+        <label>{{ $t("patientForm.heartProcedures") }}:</label>
         <input
           v-model="patient.heart_procedures"
-          placeholder="Erottele pilkulla"
+          :placeholder="$t('patientForm.heartProceduresPlaceholder')"
         >
-  
+
         <div class="form-actions">
           <button type="submit">
-            Tallenna
+            {{ $t("patientForm.save") }}
           </button>
           <button
             type="button"
             @click="closeForm"
           >
-            Ohita
+            {{ $t("patientForm.skip") }}
           </button>
         </div>
       </form>
@@ -149,44 +149,11 @@
         } catch (error) {
           console.error("Virhe tallennuksessa:", error);
         }
-      },
-    };
-  },
-  methods: {
-    async submitForm() {
-      try {
-        const formattedData = {
-          user_id: this.userId,
-          weight: Number(this.patient.weight),
-          height: Number(this.patient.height),
-          conditions: this.patient.conditions.split(",").map((item) => item.trim()),
-          avg_blood_pressure: this.patient.avg_blood_pressure,
-          risk_factors: this.patient.risk_factors.split(",").map((item) => item.trim()),
-          alcohol_use: this.patient.alcohol_use,
-          allergies: this.patient.allergies.split(",").map((item) => item.trim()),
-          activity: this.patient.activity,
-          medications: this.patient.medications.split(",").map((item) => item.trim()),
-          heart_procedures: this.patient.heart_procedures
-            .split(",")
-            .map((item) => item.trim()),
-        };
-
-        await fetch("http://127.0.0.1:8000/api/patient", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formattedData),
-        });
-
-        alert(this.$t("patientForm.saveSuccess")); // Lokalisoitu ilmoitus
-        this.$emit("close");
-      } catch (error) {
-        console.error(this.$t("patientForm.saveError"), error); // Lokalisoitu virheilmoitus
-      }
     },
     closeForm() {
       this.$emit("close");
-    },
-  },
+    }
+  }
 };
 </script>
 
