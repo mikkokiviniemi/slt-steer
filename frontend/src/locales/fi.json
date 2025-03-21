@@ -9,6 +9,8 @@
   "connection-error": "Palvelimeen ei saada yhteyttä.",
   "change": "Kieli vaihdettu:",
   "logout": "Kirjaudu ulos",
+  "user_saved": "Esitiedot tallennettu!",
+  "user_id": "Käyttäjätunnuksesi on:",
   "settings": {
     "title": "Asetukset",
     "personalInfo": "Henkilötiedot",

@@ -5,12 +5,11 @@
       <li><a href="#">Settings</a></li>
       <li><a href="#">Logout</a></li>
       <li>
-        <router-link to="/user">
-          User Profile
-        </router-link>
+        <a
+          href="#"
+          @click.prevent="openPatientForm"
+        >Esitietolomake</a>
       </li>
-
-      <li><a href="#" @click.prevent="openPatientForm">Esitietolomake</a></li>
     </ul>
   </aside>
 
@@ -35,15 +34,6 @@ const emit = defineEmits(["open-patient-form"]);
 const openPatientForm = () => {
   emit("open-patient-form");
 };
-
-// Temporarily commented out
-/*
-const emit = defineEmits(["toggle-sidebar"]);
-
-const handleSidebarToggle = () => {
-  emit("toggle-sidebar");
-};
-*/
 
 const settingsOpen = ref(false);
 </script>

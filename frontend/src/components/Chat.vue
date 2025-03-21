@@ -1,31 +1,53 @@
 <template>
   <div class="chat-container">
     <!-- Esitietolomake-modal -->
-    <PatientForm v-if="showForm" @close="closePatientForm" />
+    <PatientForm 
+      v-if="showForm" 
+      @close="closePatientForm" 
+    />
 
     <div class="messages">
       <!-- Tervetuloviesti, joka näytetään vain kerran ensimmäisenä viestinä -->
-      <div v-if="welcomeMessageDisplayed" class="message other">
+      <div
+        v-if="welcomeMessageDisplayed"
+        class="message other"
+      >
         <div class="message-content">
           Hei, olen sydänterveytesi assistentti ja haluan auttaa sinua askarruttavissa asioissa ja edistää terveyttäsi. 
           Aluksi haluaisin tietää muutamia esitietoja. 
-          <a href="#" @click.prevent="openPatientForm">Täytä esitietolomake</a>. 
+          <a
+            href="#"
+            @click.prevent="openPatientForm"
+          >Täytä esitietolomake</a>. 
           Voit myös palata täydentämään esitietoja myöhemmin sivupaneelista.
         </div>
       </div>
 
       <!-- Käyttäjän ja botin viestit -->
-      <div v-for="(message, index) in messages" :key="index" :class="['message', message.from === 'self' ? 'self' : 'other']">
+      <div
+        v-for="(message, index) in messages"
+        :key="index"
+        :class="['message', message.from === 'self' ? 'self' : 'other']"
+      >
         <div class="message-content">
-          <span v-html="message.text"></span>
+          <span v-html="message.text" />
         </div>
       </div>
     </div>
 
-    <form class="input-area" @submit.prevent="sendMessage">
-      <input v-model="newMessage" type="text" placeholder="Kirjoita kysymyksesi tähän..." required>
-      <button type="submit">Lähetä</button>
-
+    <form
+      class="input-area"
+      @submit.prevent="sendMessage"
+    >
+      <input
+        v-model="newMessage"
+        type="text"
+        placeholder="Kirjoita kysymyksesi tähän..."
+        required
+      >
+      <button type="submit">
+        Lähetä
+      </button>
     </form>
   </div>
 </template>
@@ -64,7 +86,7 @@ export default {
     closePatientForm() {
       this.showForm = false;
       this.$emit("update:externalShowForm", false);
-
+    },
     async fetchMapping() {
       try {
         const response = await axios.get("http://127.0.0.1:8000/api/data");
