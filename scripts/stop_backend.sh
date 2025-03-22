@@ -1,0 +1,1 @@
+kill -f uvicorn
