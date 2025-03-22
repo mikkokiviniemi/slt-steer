@@ -1,1 +1,1 @@
-kill -f uvicorn
+pkill -f uvicorn
