@@ -4,11 +4,9 @@ from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmb
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.chains import create_retrieval_chain
 from langchain_chroma import Chroma
-import google.generativeai as genai
 from PyPDF2 import PdfReader
 import os
 import io
-import time
 from dotenv import load_dotenv
 
 from langchain_core.prompts import ChatPromptTemplate
@@ -22,7 +20,7 @@ google_api_key = os.getenv('GEMINI_API')
 bucket_name = "training_data-1" 
 
 # ChromaDB:n tallennuskansio
-persist_directory = "db_cache"
+persist_directory = "data/chroma_db"
 
 # -----------------------------
 # 1) Ladataan PDF:t (tarvittaessa), alustetaan Chroma
