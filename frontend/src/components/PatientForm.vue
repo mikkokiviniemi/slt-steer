@@ -149,11 +149,11 @@
         } catch (error) {
           console.error("Virhe tallennuksessa:", error);
         }
-    },
-    closeForm() {
-      this.$emit("close");
+      },
+      closeForm() {
+        this.$emit("close");
+      }
     }
-
   };
   </script>
   
@@ -215,8 +215,6 @@ h2 {
 }
 
 /* Lomakekenttien tyyli */
-
-}
 
 label {
   display: block;
