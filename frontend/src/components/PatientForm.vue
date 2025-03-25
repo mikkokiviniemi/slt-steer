@@ -1,67 +1,114 @@
 <template>
-    <div class="modal-overlay">
-      <div class="modal">
-        <!-- Sulje-nappi oikeassa yläkulmassa -->
-        <button class="close-btn" @click="closeForm">✖</button>
-  
-        <h2>Esitietolomake</h2>
-        <form @submit.prevent="submitForm">
-          <label>Paino (kg):</label>
-          <input v-model="patient.weight" type="number" required>
-  
-          <label>Pituus (cm):</label>
-          <input v-model="patient.height" type="number" required>
-  
-          <label>Taustasairaudet:</label>
-          <input v-model="patient.conditions" placeholder="Erottele pilkulla">
-  
-          <label>Keskimääräiset verenpaineet:</label>
-          <input v-model="patient.avg_blood_pressure">
-  
-          <label>Riskitekijät:</label>
-          <input v-model="patient.risk_factors" placeholder="Tupakointi, diabetes, kohonneet kolesterolit, verenpainetauti, sukurasite">
-  
-          <label>Alkoholin käyttö:</label>
-          <input v-model="patient.alcohol_use">
-  
-          <label>Allergiat:</label>
-          <input v-model="patient.allergies" placeholder="Erottele pilkulla">
-  
-          <label>Liikkumistottumukset ja rajoitteet:</label>
-          <input v-model="patient.activity">
-  
-          <label>Lääkitys:</label>
-          <input v-model="patient.medications" placeholder="Erottele pilkulla">
-  
-          <label>Tehdyt sydäntoimenpiteet:</label>
-          <input v-model="patient.heart_procedures" placeholder="Erottele pilkulla">
-  
-          <div class="form-actions">
-            <button type="submit">Tallenna</button>
-            <button type="button" @click="closeForm">Ohita</button>
-          </div>
-        </form>
+  <div class="modal-overlay">
+    <div class="modal">
+      <!-- Sulje-nappi oikeassa yläkulmassa -->
+      <button
+        class="close-btn"
+        @click="closeForm"
+      >
+        ✖
+      </button>
+
+      <h2>{{ $t("patientForm.title") }}</h2>
+      <form @submit.prevent="submitForm">
+        <label>{{ $t("patientForm.weight") }} (kg):</label>
+        <input
+          v-model="patient.weight"
+          type="number"
+          required
+        >
+
+        <label>{{ $t("patientForm.height") }} (cm):</label>
+        <input
+          v-model="patient.height"
+          type="number"
+          required
+        >
+
+        <label>{{ $t("patientForm.conditions") }}:</label>
+        <input
+          v-model="patient.conditions"
+          :placeholder="$t('patientForm.conditionsPlaceholder')"
+        >
+
+        <label>{{ $t("patientForm.avgBloodPressure") }}:</label>
+        <input v-model="patient.avg_blood_pressure">
+
+        <label>{{ $t("patientForm.riskFactors") }}:</label>
+        <input
+          v-model="patient.risk_factors"
+          :placeholder="$t('patientForm.riskFactorsPlaceholder')"
+        >
+
+        <label>{{ $t("patientForm.alcoholUse") }}:</label>
+        <input v-model="patient.alcohol_use">
+
+        <label>{{ $t("patientForm.allergies") }}:</label>
+        <input
+          v-model="patient.allergies"
+          :placeholder="$t('patientForm.allergiesPlaceholder')"
+        >
+
+        <label>{{ $t("patientForm.activity") }}:</label>
+        <input v-model="patient.activity">
+
+        <label>{{ $t("patientForm.medications") }}:</label>
+        <input
+          v-model="patient.medications"
+          :placeholder="$t('patientForm.medicationsPlaceholder')"
+        >
+
+        <label>{{ $t("patientForm.heartProcedures") }}:</label>
+        <input
+          v-model="patient.heart_procedures"
+          :placeholder="$t('patientForm.heartProceduresPlaceholder')"
+        >
+
+        <div class="form-actions">
+          <button type="submit">
+            {{ $t("patientForm.save") }}
+          </button>
+          <button
+            type="button"
+            @click="closeForm"
+          >
+            {{ $t("patientForm.skip") }}
+          </button>
+        </div>
+      </form>
+
+      <!--User ID display section-->
+      <div
+        v-if="userId"
+        class="user-id-section"
+      >
+        <p>{{ $t("user_saved") }}</p>
+        <p>{{ $t("user_id") }} <strong>{{ userId }}</strong></p>
       </div>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
+  import { createUser } from "@/api/users";
+
   export default {
     props: ["show"],
+    emits: ["close"], 
     data() {
       return {
-        userId: "user123",
-        patient: {
+        userId: null,
+        patient: {  
           weight: "",
           height: "",
-          conditions: "",
+          conditions: "", 
           avg_blood_pressure: "",
           risk_factors: "",
           alcohol_use: "",
           allergies: "",
           activity: "",
           medications: "",
-          heart_procedures: ""
+          heart_procedures: "",
         }
       };
     },
@@ -72,36 +119,46 @@
             user_id: this.userId,
             weight: Number(this.patient.weight),
             height: Number(this.patient.height),
-            conditions: this.patient.conditions.split(",").map(item => item.trim()),
+            conditions: this.patient.conditions.trim() !== "" 
+              ? this.patient.conditions.split(",").map(item => item.trim()).filter(item => item !== "") 
+              : [],
             avg_blood_pressure: this.patient.avg_blood_pressure,
-            risk_factors: this.patient.risk_factors.split(",").map(item => item.trim()),
+            risk_factors: this.patient.risk_factors.trim() !== "" 
+              ? this.patient.risk_factors.split(",").map(item => item.trim()).filter(item => item !== "") 
+              : [],
             alcohol_use: this.patient.alcohol_use,
-            allergies: this.patient.allergies.split(",").map(item => item.trim()),
+            allergies: this.patient.allergies.trim() !== "" 
+              ? this.patient.allergies.split(",").map(item => item.trim()).filter(item => item !== "") 
+              : [],
             activity: this.patient.activity,
-            medications: this.patient.medications.split(",").map(item => item.trim()),
-            heart_procedures: this.patient.heart_procedures.split(",").map(item => item.trim())
+            medications: this.patient.medications.trim() !== "" 
+              ? this.patient.medications.split(",").map(item => item.trim()).filter(item => item !== "") 
+              : [],
+            heart_procedures: this.patient.heart_procedures.trim() !== "" 
+              ? this.patient.heart_procedures.split(",").map(item => item.trim()).filter(item => item !== "") 
+              : []
           };
   
-          await fetch("http://127.0.0.1:8000/api/patient", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formattedData)
-          });
-  
-          alert("Esitiedot tallennettu!");
-          this.$emit("close");
+          const response = await createUser(formattedData);
+          console.log("Response from MongoDB:", response);
+
+          if (response) {
+            this.userId = response;
+            
+          }
         } catch (error) {
           console.error("Virhe tallennuksessa:", error);
         }
-      },
-      closeForm() {
-        this.$emit("close");
-      }
+    },
+    closeForm() {
+      this.$emit("close");
     }
+
   };
   </script>
   
   <style scoped>
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -128,8 +185,6 @@
   border: 2px solid #005b96;
   font-family: "Arial", sans-serif;
 }
-
-
 
 .close-btn {
   position: absolute;
@@ -160,6 +215,9 @@ h2 {
 }
 
 /* Lomakekenttien tyyli */
+
+}
+
 label {
   display: block;
   font-weight: bold;
@@ -246,7 +304,13 @@ button[type="button"]:hover {
     width: 100%;
     padding: 10px;
     font-size: 1rem;
+}
+
+  /* User ID Section */
+  .user-id-section {
+    margin-top: 30px;
   }
+  
 }
 </style>
-  
+

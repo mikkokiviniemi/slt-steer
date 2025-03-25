@@ -1,30 +1,53 @@
 <template>
   <div class="chat-container">
     <!-- Esitietolomake-modal -->
-    <PatientForm v-if="showForm" @close="closePatientForm" />
+    <PatientForm 
+      v-if="showForm" 
+      @close="closePatientForm" 
+    />
 
     <div class="messages">
       <!-- Tervetuloviesti, joka näytetään vain kerran ensimmäisenä viestinä -->
-      <div v-if="welcomeMessageDisplayed" class="message other">
+      <div
+        v-if="welcomeMessageDisplayed"
+        class="message other"
+      >
         <div class="message-content">
-          Hei, olen sydänterveytesi assistentti ja haluan auttaa sinua askarruttavissa asioissa ja edistää terveyttäsi. 
-          Aluksi haluaisin tietää muutamia esitietoja. 
-          <a href="#" @click.prevent="openPatientForm">Täytä esitietolomake</a>. 
-          Voit myös palata täydentämään esitietoja myöhemmin sivupaneelista.
+          {{ $t("welcomeMessage") }}
+          <a
+            href="#"
+            @click.prevent="openPatientForm"
+          >{{ $t("fillForm") }}</a>.
+          {{ $t("returnLater") }}
         </div>
       </div>
 
       <!-- Käyttäjän ja botin viestit -->
-      <div v-for="(message, index) in messages" :key="index" :class="['message', message.from === 'self' ? 'self' : 'other']">
-        <div class="message-content">
-          <span v-html="message.text"></span>
-        </div>
+      <div
+        v-for="(message, index) in messages"
+        :key="index"
+        :class="['message', message.from === 'self' ? 'self' : 'other']"
+      >
+        <div
+          class="message-content"
+          v-html="message.text"
+        />
       </div>
     </div>
 
-    <form class="input-area" @submit.prevent="sendMessage">
-      <input v-model="newMessage" type="text" placeholder="Kirjoita kysymyksesi tähän..." required>
-      <button type="submit">Lähetä</button>
+    <form
+      class="input-area"
+      @submit.prevent="sendMessage"
+    >
+      <input
+        v-model="newMessage"
+        type="text"
+        :placeholder="$t('prompt')"
+        required
+      >
+      <button type="submit">
+        <p>{{ $t("send") }}</p>
+      </button>
     </form>
   </div>
 </template>
@@ -32,14 +55,19 @@
 <script>
 import axios from "axios";
 import PatientForm from "./PatientForm.vue";
+import { useI18n } from "vue-i18n"; // Lisätty kielituki
 
 export default {
   name: "ChatComponent",
   components: {
-    PatientForm
+    PatientForm,
   },
   props: {
-    externalShowForm: Boolean
+    externalShowForm: Boolean,
+  },
+  setup() {
+    const { t, locale } = useI18n(); // Hae kielituki
+    return { t, locale };
   },
   data() {
     return {
@@ -47,13 +75,13 @@ export default {
       messages: [],
       newMessage: "",
       showForm: false,
-      welcomeMessageDisplayed: true, // Varmistaa, että tervetuloviesti on aina ensimmäinen
+      welcomeMessageDisplayed: true, // Tervetuloviesti näytetään vain kerran
     };
   },
   watch: {
     externalShowForm(newVal) {
       this.showForm = newVal;
-    }
+    },
   },
   methods: {
     openPatientForm() {
@@ -64,6 +92,14 @@ export default {
       this.showForm = false;
       this.$emit("update:externalShowForm", false);
     },
+    async fetchMapping() {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/data");
+        this.mapping = response.data.data;
+      } catch (error) {
+        console.error(this.$t("data-error"), error);
+      }
+    },
     async sendMessage() {
       if (this.newMessage.trim() === "") return;
 
@@ -72,29 +108,27 @@ export default {
 
       try {
         const response = await axios.post("http://127.0.0.1:8000/api/send", {
-          message: this.newMessage
+          message: this.newMessage,
         });
 
         // Lisää palvelimen vastaus chattiin
         this.messages.push({ text: response.data.reply, from: "other" });
       } catch (error) {
-        console.error("Virhe viestin lähettämisessä:", error);
-        this.messages.push({ text: "Palvelimeen ei saada yhteyttä.", from: "other" });
+        console.error(this.$t("send-error"), error);
+        this.messages.push({ text: this.$t("connection-error"), from: "other" });
       }
 
       // Tyhjennä syötekenttä
       this.newMessage = "";
-    }
-  }
+    },
+  },
 };
 </script>
 
-
 <style scoped>
-
 body {
   background-color: #f0f4f8;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
 }

@@ -1,16 +1,34 @@
 <template>
   <aside :class="['sidebar', { open: isOpen }]">
     <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Settings</a></li>
-      <li><a href="#">Logout</a></li>
-      <li><a href="#" @click.prevent="openPatientForm">Esitietolomake</a></li>
+      <li><a href="#"><p>{{ $t("home") }}</p></a></li>
+      <li>
+        <a
+          href="#"
+          @click="settingsOpen = true"
+        >{{ $t("settings.title") }}</a>
+      </li>
+      <li><a href="#">{{ $t("logout") }}</a></li>
+      <li>
+        <a
+          href="#"
+          @click.prevent="openPatientForm"
+        >Esitietolomake</a>
+      </li>
     </ul>
   </aside>
+
+  <SettingsModal
+    v-if="settingsOpen"
+    @close="settingsOpen = false"
+  />
 </template>
 
 <script setup>
 import { defineProps, defineEmits } from "vue";
+
+import { ref } from "vue";
+import SettingsModal from "./SettingsModal.vue";
 
 defineProps({
   isOpen: Boolean
@@ -21,6 +39,8 @@ const emit = defineEmits(["open-patient-form"]);
 const openPatientForm = () => {
   emit("open-patient-form");
 };
+
+const settingsOpen = ref(false);
 </script>
 
 <style scoped>
@@ -69,6 +89,7 @@ a {
   transition: color 0.2s ease-in-out;
   cursor: pointer;
   padding: 8px 0;
+
 }
 
 a:hover {
@@ -77,5 +98,16 @@ a:hover {
 
 .sidebar.open {
   left: 0;
+}
+
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: block;
+  margin-bottom: 10px;
 }
 </style>
