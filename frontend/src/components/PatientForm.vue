@@ -149,15 +149,16 @@
         } catch (error) {
           console.error("Virhe tallennuksessa:", error);
         }
-    },
-    closeForm() {
-      this.$emit("close");
+      },
+      closeForm() {
+        this.$emit("close");
+      }
     }
-  }
-};
-</script>
+  };
+  </script>
+  
+  <style scoped>
 
-<style scoped>
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -168,6 +169,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 10px;
 }
 
 .modal {
@@ -177,6 +179,8 @@
   border-radius: 12px;
   max-width: 600px;
   width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 4px 10px rgba(0, 91, 150, 0.2);
   border: 2px solid #005b96;
   font-family: "Arial", sans-serif;
@@ -188,9 +192,15 @@
   right: 15px;
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
   color: #333;
+  line-height: 1;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .close-btn:hover {
@@ -200,7 +210,11 @@
 h2 {
   text-align: center;
   color: #005b96;
+  margin-bottom: 15px;
+  padding-right: 40px;  /* Estää sulkemispainikkeen menemisen otsikon päälle */
 }
+
+/* Lomakekenttien tyyli */
 
 label {
   display: block;
@@ -211,10 +225,10 @@ label {
 
 input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin-top: 5px;
   border: 1px solid #ccc;
-  border-radius: 20px;
+  border-radius: 8px;
   box-sizing: border-box;
   font-size: 1rem;
 }
@@ -223,15 +237,20 @@ input {
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
+  gap: 10px;
+  flex-wrap: nowrap; /* Estää nappien menemisen päällekkäin */
 }
 
 button {
-  padding: 10px 20px;
+  padding: 12px 20px;
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  width: auto;
+  min-width: 120px;
+  flex: 0 1 auto;
 }
 
 button[type="submit"] {
@@ -255,61 +274,41 @@ button[type="button"]:hover {
 /* Responsiivisuus */
 @media (max-width: 600px) {
   .modal {
-    max-width: 90%;
+    max-width: 90vw;
+    padding: 15px;
+  }
+
+  .close-btn {
+    font-size: 18px;
+    top: 10px;
+    right: 15px;
+    width: 25px;
+    height: 25px;
   }
 
   input {
     font-size: 0.9rem;
-    padding: 8px;
+    padding: 10px;
+  }
+
+  .form-actions {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 10px;
   }
 
   button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
+    flex: 0 1 auto;
+    width: 100%;
+    padding: 10px;
     font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  button[type="submit"] {
-    background-color: #005b96;
-    color: white;
-  }
-  
-  button[type="submit"]:hover {
-    background-color: #004080;
-  }
-  
-  button[type="button"] {
-    background-color: #e0e0e0;
-    color: #333;
-  }
-  
-  button[type="button"]:hover {
-    background-color: #bdbdbd;
-  }
+}
 
   /* User ID Section */
   .user-id-section {
     margin-top: 30px;
   }
   
-  /* Responsiivisuus */
-  @media (max-width: 600px) {
-    .modal {
-      max-width: 90%;
-    }
-  
-    input {
-      font-size: 0.9rem;
-      padding: 8px;
-    }
-  
-    button {
-      padding: 8px 15px;
-      font-size: 0.9rem;
-    }
-  }
 }
 </style>
+
