@@ -2,6 +2,7 @@ import logging
 from fastapi import APIRouter, HTTPException
 from database.db import users_collection
 from database.models import UserModel
+from bson import ObjectId
 
 router = APIRouter()
 logging.basicConfig(level=logging.INFO)
@@ -34,6 +35,7 @@ async def get_user(user_id: str):
     return user
 """
 
+
 # Modify user data
 """"
 @router.put("/{user_id}", response_model=UserModel)
@@ -56,3 +58,24 @@ async def delete_user(user_id: str):
         raise HTTPException(status_code=404, detail="User not found")
     return {"message": "User deleted successfully"}
 """
+
+@router.get("/id/{user_id}")
+async def get_user_by_object_id(user_id: str):
+    """
+    Hakee user-dokumentin MongoDB:stä _id-kentän perusteella.
+    Palauttaa kaiken dokumentista JSON-muodossa.
+    """
+    try:
+        # Tarkistetaan onko user_id validi ObjectId
+        if not ObjectId.is_valid(user_id):
+            raise HTTPException(status_code=400, detail="Invalid user_id format.")
+
+        user = await users_collection.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        user["_id"] = str(user["_id"])
+        return user
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
