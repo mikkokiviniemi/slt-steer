@@ -9,8 +9,9 @@ import os
 import io
 from dotenv import load_dotenv
 
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain.memory import ConversationBufferMemory
 
 # Google API-key
 load_dotenv() # Load .env file
@@ -95,33 +96,38 @@ llm = ChatGoogleGenerativeAI(
     google_api_key=google_api_key
 )
 
+# Alustetaan keskustelumuisti
+memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
 system_prompt = (
     "You are an assistant for question-answering tasks. "
-    "Use only the following pieces of retrieved context to answer the question. "
+    "Use the following pieces of retrieved context and chat history to answer the question. "
     "Do not use any outside knowledge or make assumptions. "
     "Use three sentences maximum for the main answer and keep the response concise. "
 
     "If the question is in English and the information is found in the context, first provide a concise answer. "
-    "Then, naturally continue the conversation by asking a relevant follow-up question based on the user's query. "
+    "Then, naturally continue the conversation by asking a relevant follow-up question based on the user's query and chat history. "
 
     "If the question is in Finnish and the information is found in the context, first provide a concise answer. "
-    "Sen jälkeen jatka keskustelua luontevasti kysymällä aiheeseen liittyvän jatkokysymyksen, joka auttaa käyttäjää syventämään ymmärrystään. "
+    "Sen jälkeen jatka keskustelua luontevasti kysymällä aiheeseen liittyvän jatkokysymyksen, joka auttaa käyttäjää syventämään ymmärrystään ottaen huomioon aikaisemman keskustelun. "
 
     "If the question is in English and the information is not found in the context, say: "
     "'Unfortunately, I do not have enough information on the topic you asked about. I recommend reaching out to a specialist or your healthcare provider if needed.' "
-    "Then, naturally ask a relevant follow-up question to better understand the user's concern. "
+    "Then, naturally ask a relevant follow-up question based on the chat history to better understand the user's concern. "
 
     "If the question is in Finnish and the information is not found in the context, say: "
     "'Valitettavasti minulla ei ole riittävästi tietoa esittämääsi aiheeseen. Suosittelen ottamaan yhteyttä asiantuntijaan tai hoitavaan tahoon tarvittaessa.' "
-    "Tämän jälkeen kysy luontevasti jatkokysymys, joka auttaa käyttäjää tarkentamaan tilannettaan. "
+    "Tämän jälkeen kysy luontevasti jatkokysymys, joka auttaa käyttäjää tarkentamaan tilannettaan ottaen huomioon aikaisemman keskustelun. "
 
     "\n\n"
-    "{context}"
+    "Context: {context}\n\n"
+    "Chat history: {chat_history}"
 )
 
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt),
+        MessagesPlaceholder(variable_name="chat_history"),
         ("human", "{input}"),
     ]
 )
@@ -134,5 +140,20 @@ rag_chain = create_retrieval_chain(retriever, question_answer_chain)
 # -----------------------------
 def get_rag_response(user_input: str) -> str:
     """ Kysyy RAG-ketjulta (Chroma+GEMINI) ja palauttaa vastauksen tekstinä. """
-    response = rag_chain.invoke({"input": user_input})
+    # Lisää nykyinen käyttäjän syöte muistiin
+    memory.chat_memory.add_user_message(user_input)
+    
+    # Suorita ketju
+    response = rag_chain.invoke({
+        "input": user_input,
+        "chat_history": memory.buffer
+    })
+    
+    # Lisää vastaus muistiin
+    memory.chat_memory.add_ai_message(response["answer"])
+    
     return response["answer"]
+
+def clear_conversation_memory():
+    """ Tyhjentää keskustelumuistin """
+    memory.clear()
