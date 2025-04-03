@@ -46,6 +46,10 @@ const handleLogin = async () => {
     );
 
     if (response.data.status === 'success') {
+      // Lisätyt rivit kirjautumistilan hallintaan
+      localStorage.setItem('isLoggedIn', 'true');
+      window.dispatchEvent(new CustomEvent('authChange'));
+      
       messageType.value = 'success';
       loginMessage.value = t('loginStatus.success');
       localStorage.setItem('user', JSON.stringify(response.data.user));

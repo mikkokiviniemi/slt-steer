@@ -58,7 +58,8 @@
   "login": {
     "title": "Kirjaudu sisään",
     "username": "Syötä käyttäjä ID",
-    "logIn": "Kirjaudu sisään"
+    "logIn": "Kirjaudu sisään",
+    "Logout": "Kirjaudu ulos"
   },
   "patientForm": {
     "title": "Esitietolomake",

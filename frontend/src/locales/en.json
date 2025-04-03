@@ -58,7 +58,8 @@
   "login": {
     "title": "Login",
     "username": "Enter user ID",
-    "logIn": "Log In"
+    "logIn": "Log In",
+    "Logout": "Logout"
   },
   "patientForm": {
     "title": "Preliminary Form",

@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-# Haetaan kirjautuneen käyttäjän id
+# Haetaan kirjautuneen käyttäjän tiedot ja kirjautumisen tila
 from routes.users import router as user_router, current_user_id, logged_in
 from ai_model import rag_cloud
 from ai_model import utils
@@ -37,9 +37,8 @@ async def send_message(payload: dict):
     3) Yhdistää käyttäjädatan promtiin ja kutsuu RAG-mallia.
     """
     
-    # Jos tarvitaan käyttäjän tilaa onko kirjautunut vai ei
-    # logged_in = app.state.logged_in 
-    
+    logged_in = app.state.logged_in 
+
     # Muutettu käyttämään payloadia, requestin sijaan
     user_message = payload.get("message")
     user_id = app.state.current_user_id
@@ -62,8 +61,11 @@ async def send_message(payload: dict):
             user_data = user_doc
 
     # 2) Rakennetaan prompt, jossa lisätään käyttäjädata mukaan
-    if user_data:
-        prompt = f"{user_message}\n\nUser data:\n{user_data}"
+    if logged_in:
+        if user_data:
+            prompt = f"{user_message}\n\nUser data:\n{user_data}"
+        else:
+            prompt = user_message
     else:
         prompt = user_message
 

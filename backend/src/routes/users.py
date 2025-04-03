@@ -1,11 +1,12 @@
 import logging
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, FastAPI
 from database.db import users_collection
 from database.models import UserModel
 from bson import ObjectId
-
+from flask import jsonify
 from fastapi import Request
 
+app = FastAPI()
 router = APIRouter()
 logging.basicConfig(level=logging.INFO)
 
@@ -48,7 +49,7 @@ async def check_user_id(user_data: dict, request: Request):  # Lisätty Request-
         request.app.state.current_user_id = user["_id"]
         request.app.state.current_user_data = user
 
-        logging.info(f"User logged in: {user}")
+        logging.info(f"User logged in: {user_id}")
         return {"status": "success", "user": user, "message": "success"}
 
     except Exception as e:
@@ -56,6 +57,23 @@ async def check_user_id(user_data: dict, request: Request):  # Lisätty Request-
         return {"status": "error", "message": "server_error"}
 
 
+@router.post("/logout")
+async def logout(request: Request):
+    """
+    Kirjaa käyttäjän ulos ja nollaa globaalit muuttujat.
+    """
+    global logged_in, current_user_id, current_user_data
+    logged_in = False
+    current_user_id = None
+    current_user_data = None
+
+    request.app.state.logged_in = False
+    request.app.state.current_user_id = None
+    request.app.state.current_user_data = None
+
+    logging.info("User logged out successfully.")
+    return {"status": "success", "message": "logout_success"}
+    
 # Create new user to MongoDB, returns unique dataId
 @router.post("/", response_model=dict)
 async def create_user(user: UserModel):
