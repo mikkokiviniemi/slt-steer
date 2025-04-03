@@ -49,10 +49,15 @@
     "age": "Age",
     "gender": "Gender"
   },
+  "loginStatus": {
+    "success": "Login successful!",
+    "invalid_id": "Invalid user ID",
+    "not_found": "User not found",
+    "server_error": "Server error"
+  },
   "login": {
     "title": "Login",
-    "username": "Username",
-    "password": "Password",
+    "username": "Enter user ID",
     "logIn": "Log In"
   },
   "patientForm": {

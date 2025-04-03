@@ -4,8 +4,57 @@ from database.db import users_collection
 from database.models import UserModel
 from bson import ObjectId
 
+from fastapi import Request
+
 router = APIRouter()
 logging.basicConfig(level=logging.INFO)
+
+# Global variables for user session
+logged_in = False
+current_user_id = None
+current_user_data = None
+
+
+@router.post("/login")
+async def check_user_id(user_data: dict, request: Request):  # Lisätty Request-parametri
+    """
+    Kirjautuu sisään käyttäjänä, joka on jo olemassa MongoDB:ssä.
+    Tarkistaa onko käyttäjä olemassa ja palauttaa käyttäjätiedot.
+    Jos käyttäjää ei löydy, palauttaa virheilmoituksen.
+    """
+    
+    # Set global variables
+    global logged_in, current_user_id, current_user_data
+
+    try:
+        user_id = user_data.get("user_id")
+        
+        if not ObjectId.is_valid(user_id):
+            return {"status": "error", "message": "invalid_id"}
+
+        # tekee saman työn kuin main.py:ssä
+        user = await users_collection.find_one({"_id": ObjectId(user_id)})
+        
+        if not user:
+            return {"status": "error", "message": "not_found"}
+
+        user["_id"] = str(user["_id"])
+        
+        # Päivitä  globaalit muuttujat JA sovelluksen tila
+        logged_in = True
+        current_user_id = user["_id"]
+        current_user_data = user
+        request.app.state.logged_in = True  # <-- Tallenna sovelluksen tilaan eli mainiin
+        request.app.state.current_user_id = user["_id"]
+        request.app.state.current_user_data = user
+
+        logging.info(f"User logged in: {user}")
+        return {"status": "success", "user": user, "message": "success"}
+
+    except Exception as e:
+        logging.exception("Login error")
+        return {"status": "error", "message": "server_error"}
+
 
 # Create new user to MongoDB, returns unique dataId
 @router.post("/", response_model=dict)

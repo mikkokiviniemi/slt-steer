@@ -49,10 +49,15 @@
     "age": "Ikä",
     "gender": "Sukupuoli"
   },
+  "loginStatus": {
+    "success": "Kirjautuminen onnistui!",
+    "invalid_id": "Virheellinen käyttäjätunnus",
+    "not_found": "Käyttäjää ei löytynyt",
+    "server_error": "Palvelinvirhe"
+  },
   "login": {
     "title": "Kirjaudu sisään",
-    "username": "Käyttäjätunnus",
-    "password": "Salasana",
+    "username": "Syötä käyttäjä ID",
     "logIn": "Kirjaudu sisään"
   },
   "patientForm": {
