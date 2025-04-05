@@ -1,12 +1,15 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from routes.users import router as user_router
-from ai_model import rag_cloud
+#from ai_model import rag_cloud
+from ai_model import gemini_rag_model
 from ai_model import utils
 from bson import ObjectId
 from database.db import users_collection
 
 app = FastAPI()
+rag_system = gemini_rag_model.RAGSystem()
+
 
 # CORS (Allow frontend to communicate with backend)
 app.add_middleware(
@@ -53,7 +56,7 @@ async def send_message(request: dict):
 
     # 3) Kutsutaan RAG-mallia
     try:
-        raw_response = rag_cloud.get_rag_response(prompt)
+        raw_response = rag_system.get_response(prompt)
         formatted_text = utils.formatGeminiResponse(raw_response)
         return {"reply": formatted_text}
     except Exception as e:
