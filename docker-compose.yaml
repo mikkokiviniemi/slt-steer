@@ -1,0 +1,14 @@
+services:
+  backend:
+    build: ./backend
+    image: mikkokiviniemi/slt-steer:latest
+    env_file:
+      - .env.backend
+  frontend:
+    build: ./frontend
+    image: mikkokiviniemi/slt-steer:latest
+    ports:
+      - 8080:8080
+    env_file:
+      - .env.frontend
+
