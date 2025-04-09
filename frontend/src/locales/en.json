@@ -78,12 +78,24 @@
     "active": "Active",
     "very_active": "Very active"
   },
+  "loginStatus": {
+    "success": "Login successful!",
+    "invalid_id": "Invalid user ID",
+    "not_found": "User not found",
+    "server_error": "Server error"
+  },
   "login": {
     "title": "Login",
+<<<<<<< HEAD
     "username": "Username",
     "password": "Password",
     "logIn": "Log In",
     "userId": "User ID"
+=======
+    "username": "Enter user ID",
+    "logIn": "Log In",
+    "Logout": "Logout"
+>>>>>>> origin/FinalVersionLogin
   },
   "patientForm": {
     "title": "Preliminary Form",

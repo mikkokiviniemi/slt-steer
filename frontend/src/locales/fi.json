@@ -78,12 +78,24 @@
     "active": "Aktiivinen",
     "very_active": "Erittäin aktiivinen"
   },
+  "loginStatus": {
+    "success": "Kirjautuminen onnistui!",
+    "invalid_id": "Virheellinen käyttäjätunnus",
+    "not_found": "Käyttäjää ei löytynyt",
+    "server_error": "Palvelinvirhe"
+  },
   "login": {
     "title": "Kirjaudu sisään",
+<<<<<<< HEAD
     "username": "Käyttäjätunnus",
     "password": "Salasana",
     "logIn": "Kirjaudu sisään",
     "userId": "Käyttäjätunnus"
+=======
+    "username": "Syötä käyttäjä ID",
+    "logIn": "Kirjaudu sisään",
+    "Logout": "Kirjaudu ulos"
+>>>>>>> origin/FinalVersionLogin
   },
   "patientForm": {
     "title": "Esitietolomake",

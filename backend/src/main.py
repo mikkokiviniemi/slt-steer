@@ -1,12 +1,20 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from routes.users import router as user_router
+# Haetaan kirjautuneen käyttäjän tiedot ja kirjautumisen tila
+from routes.users import router as user_router, current_user_id, logged_in
 from ai_model import rag_cloud
 from ai_model import utils
 from bson import ObjectId
 from database.db import users_collection
 
+
 app = FastAPI()
+
+# Alustetaan globaalien muuttujien tila
+app.state.logged_in = False
+app.state.current_user_id = None
+app.state.current_user_data = None
+
 
 # CORS (Allow frontend to communicate with backend)
 app.add_middleware(
@@ -22,15 +30,22 @@ def home():
     return {"message": "Hello from FastAPI!"}
 
 @app.post("/api/send")
-async def send_message(request: dict):
+async def send_message(payload: dict):
     """
     1) Lukee frontendiltä tulevan 'message' ja (optionaalisen) 'user_id' -kentän.
     2) Jos user_id on annettu ja kelvollinen, hakee käyttäjädatan MongoDB:stä.
     3) Yhdistää käyttäjädatan promtiin ja kutsuu RAG-mallia.
     """
-    user_message = request.get("message")
-   # user_id = request.get("user_id")  # <-- user_id voi olla mukana requestissa
-    user_id = "67dcee7f8c956f5a6d144f29" # Kova koodattu tupakoitsija (meikä :D), testausta varten saa poistaa kun kirjautuminen toteutettu
+    
+    logged_in = app.state.logged_in 
+
+    # Muutettu käyttämään payloadia, requestin sijaan
+    user_message = payload.get("message")
+    user_id = app.state.current_user_id
+
+    # jos haluaa muuttaa niin voi hakea user_datan suoraan globaalista muuttujasta ja käyttää sitä
+    # nyt data haetaan ensin MongoDB:stä ja sitten asetetaan globaaliksi muuttujaksi
+    # ja uudelleen sama tässä mainissa
 
     if not user_message:
         raise HTTPException(status_code=400, detail="Message is required.")
@@ -46,8 +61,11 @@ async def send_message(request: dict):
             user_data = user_doc
 
     # 2) Rakennetaan prompt, jossa lisätään käyttäjädata mukaan
-    if user_data:
-        prompt = f"{user_message}\n\nUser data:\n{user_data}"
+    if logged_in:
+        if user_data:
+            prompt = f"{user_message}\n\nUser data:\n{user_data}"
+        else:
+            prompt = user_message
     else:
         prompt = user_message
 
