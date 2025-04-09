@@ -2,13 +2,18 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from routes.users import router as user_router
 #from ai_model import rag_cloud
-from ai_model import gemini_rag_model
+from ai_model import rag_model
 from ai_model import utils
 from bson import ObjectId
 from database.db import users_collection
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+google_api_key = os.getenv('GEMINI_API')
 
 app = FastAPI()
-rag_system = gemini_rag_model.RAGSystem()
+rag_system = rag_model.RagModel(google_api_key)
 
 
 # CORS (Allow frontend to communicate with backend)
@@ -56,7 +61,7 @@ async def send_message(request: dict):
 
     # 3) Kutsutaan RAG-mallia
     try:
-        raw_response = rag_system.get_response(prompt)
+        raw_response = rag_system.generate_response(prompt)
         formatted_text = utils.formatGeminiResponse(raw_response)
         return {"reply": formatted_text}
     except Exception as e:
