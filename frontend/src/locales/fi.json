@@ -15,6 +15,7 @@
   "welcomeMessage": "Hei, olen sydänterveytesi assistentti ja haluan auttaa sinua askarruttavissa asioissa ja edistää terveyttäsi. Aluksi haluaisin tietää muutamia esitietoja.",
   "fillForm": "Täytä esitietolomake",
   "returnLater": "Voit myös palata täydentämään esitietoja myöhemmin sivupaneelista.",
+  "form" : "Esitietolomake",
   "settings": {
     "title": "Asetukset",
     "personalInfo": "Henkilötiedot",

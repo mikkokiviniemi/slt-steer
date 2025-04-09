@@ -7,8 +7,6 @@
     --background-light: #e3f2fd; /* Soft, Warm Sky Blue */
     --background-neutral: #fefefe; /* Pure White */
     --background-dark: #1e4976; /* Professional Darker Blue */
-
-    /* Sidebar Background (Lighter but Structured) */
     --sidebar-bg: #b2daf5; /* Soft but Slightly Darker Blue */
 
     /* Text Colors (Legible & Modern) */
@@ -19,6 +17,24 @@
     /* Buttons & Borders (Professional Touch) */
     --button-hover: #005cbf; /* Stronger, Deeper Blue */
     --border-color: #8cb3d9; /* Subtle Sky Blue Border */
+    
+    /*Chat colors*/
+    --border-chat: #005b96;
+    --box-shadow: rgba(0, 91, 150, 0.2);
+    --message-self: #43a352;
+    --message-other: #e0e0e0;
+    --text-color: #333;
+    --input-border: #ccc;
+
+    /*Form colors*/
+    --overlay-background: rgba(0, 0, 0, 0.6);
+    --modal-background: #ffffff;
+    --button-background: #bdbdbd;
+
+    /*Settings colors*/
+    --modal-shadow: rgba(0, 0, 0, 0.1);
+    --close-btn: #666;
+    --settings-background: #f5f5f5;
 
     /* Status Colors (Balanced Visibility) */
     --success-color: #23d189; /* Balanced Bright Green */
@@ -36,4 +52,202 @@ body, html {
     width: 100%;
     height: 100%;
     background-color: var(--background-light); /* Ensure background covers */
+    font-family: "Arial", sans-serif;
 }
+
+/*Headerbar styling*/
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 90px;
+    padding: 15px 25px;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+}
+
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 15px;
+}
+
+.language-selector select {
+    padding: 8px;
+    font-size: 16px;
+    background: var(--background-dark);
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* When the dropdown is open (focused) */
+.language-selector select:focus {
+    background: var(--background-light);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* When hovering over the dropdown */
+.language-selector select:hover {
+    background: var(--background-light);
+    color: var(--primary-color);
+}
+
+  
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0px;
+  flex-direction: column;
+}
+
+.logo {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-height: 90px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px var(--box-shadow);
+}
+
+
+/*Sidebar styling*/
+.sidebar {
+    position: fixed;
+    top: 90px; /* Match header height */
+    left: -250px;
+    height: calc(100% - 90px); /* Adjust height to avoid overlapping header */
+    background: var(--sidebar-bg);
+    color: var(--text-dark);
+    padding: 30px 50px;
+    transition: left 0.2s;
+    font-size: 1rem;
+    font-family: 'Arial', sans-serif; /* Sama fontti kuin chat-ikkunan nappuloissa */
+  }
+
+  .sidebar.open {
+    left: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar a {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.2s ease-in-out;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+.sidebar a:hover {
+    color: var(--text-light);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 18px;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/*Chatbox styling*/
+.chat-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    background: var(--text-light);
+    border: 2px solid var(--button-hover);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px var(--box-shadow);
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    box-sizing: border-box;
+    padding: 20px;
+  }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    padding-right: 10px;
+  }
+  
+  .message {
+    margin-bottom: 10px;
+    word-wrap: break-word;
+  }
+  
+  .message.self {
+    text-align: right;
+  }
+  
+  .message.other {
+    text-align: left;
+  }
+  
+  .message-content {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 20px;
+    max-width: 75%;
+    font-size: 1rem;
+  }
+  
+  .message.self .message-content {
+    background: var(--message-self);
+    color: var(--text-light);
+  }
+  
+  .message.other .message-content {
+    background: var(--message-other);
+    color: var(--text-color);
+  }
+  
+  .input-area {
+    display: flex;
+    align-items: center;
+  }
+  
+  .input-area input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--input-border);
+    border-radius: 20px;
+    box-sizing: border-box;
+    font-size: 1rem;
+  }
+  
+  .input-area button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: var(--border-chat);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .input-area button:hover {
+    background-color: var(--button-hover);
+  }

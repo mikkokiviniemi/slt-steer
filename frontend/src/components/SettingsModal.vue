@@ -71,7 +71,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--overlay-background);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -87,7 +87,7 @@
     height: 600px; /* Fixed height */
     max-width: 90%;
     max-height: 90%;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 8px 16px var(--modal-shadow);
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -143,7 +143,7 @@
   }
   
   .settings-menu li:hover {
-    background: #f5f5f5;
+    background: var(--settings-background);
     color: #333;
   }
   

@@ -165,7 +165,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--overlay-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,15 +174,15 @@
 
 .modal {
   position: relative;
-  background: #ffffff;
+  background: var(--modal-background);
   padding: 20px;
   border-radius: 12px;
   max-width: 600px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 4px 10px rgba(0, 91, 150, 0.2);
-  border: 2px solid #005b96;
+  box-shadow: 0 4px 10px var(--box-shadow);
+  border: 2px solid var(--border-chat);
   font-family: "Arial", sans-serif;
 }
 
@@ -204,12 +204,12 @@
 }
 
 .close-btn:hover {
-  color: red;
+  color: var(--danger-color);
 }
 
 h2 {
   text-align: center;
-  color: #005b96;
+  color: var(--border-chat);
   margin-bottom: 15px;
   padding-right: 40px;  /* Estää sulkemispainikkeen menemisen otsikon päälle */
 }
@@ -254,12 +254,12 @@ button {
 }
 
 button[type="submit"] {
-  background-color: #005b96;
+  background-color: var(--border-chat);
   color: white;
 }
 
 button[type="submit"]:hover {
-  background-color: #004080;
+  background-color: var(--button-hover);
 }
 
 button[type="button"] {

@@ -51,8 +51,7 @@ const changeLanguage = (event) => {
   locale.value = newLocale;
   localStorage.setItem("selectedLanguage", newLocale);
   window.location.reload();
-  //console.log("Kieli vaihdettu", locale.value);  <- Rivi ehkä turha?
-  // Add logic to change the language globally in your app if needed
+  //console.log("Kieli vaihdettu", locale.value);
 }
 
 watch(locale, (newLocale) => {
@@ -63,60 +62,6 @@ watch(locale, (newLocale) => {
 </script>
 
 <style scoped>
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Pushes items to left, center, right */
-    height: 90px; /* Increased height */
-    padding: 15px 25px; /* Adjusted padding */
-    background-color: var(--primary-color);
-    color: var(--text-light);
-}
-
-.sidebar-toggle {
-  background: none;
-  border: none;
-  color: var(--text-light);
-  font-size: 24px; /* Increased icon size */
-  cursor: pointer;
-  padding: 15px;
-}
-
-.logo-container {
-  flex: 1; /* Allows logo to be centered */
-  display: flex;
-  justify-content: center;
-}
-
-.logo {
-  width: auto;
-  height: 80px; /* Increased logo size */
-  max-height: 100%;
-}
-
-.language-selector select {
-  padding: 8px;
-  font-size: 16px;
-  background: var(--background-dark);
-  color: var(--text-light);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* When the dropdown is open (focused) */
-.language-selector select:focus {
-  background: var(--background-light);
-  color: var(--primary-color);
-  border-color: var(--primary-color);
-  outline: none;
-}
-
-/* When hovering over the dropdown */
-.language-selector select:hover {
-  background: var(--background-light);
-  color: var(--primary-color);
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -130,7 +75,8 @@ watch(locale, (newLocale) => {
   }
 
   .logo {
-    height: 70px;
+    max-width: 140px;
+    max-height: 60px;
   }
 
   .language-selector select {
@@ -149,7 +95,8 @@ watch(locale, (newLocale) => {
   }
 
   .logo {
-    height: 60px;
+    max-width: 120px;
+    max-height: 50px;
   }
 
   .language-selector select {

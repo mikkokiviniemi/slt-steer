@@ -15,6 +15,7 @@
 "welcomeMessage": "Hi, I am your heart health assistant and I want to help you with your concerns and promote your health. First, I would like to know some preliminary information.",
 "fillForm": "Fill out the preliminary form",
 "returnLater": "You can also return to complete the preliminary information later from the side panel.",
+"form" : "Preliminary form",
 "settings": {
     "title": "Settings",
     "personalInfo": "Personal Info",
