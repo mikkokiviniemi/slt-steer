@@ -1,4 +1,5 @@
 import logging
+from ai_model import rag_cloud
 from fastapi import APIRouter, HTTPException, FastAPI
 from database.db import users_collection
 from database.models import UserModel
@@ -71,12 +72,14 @@ async def logout(request: Request):
     request.app.state.current_user_id = None
     request.app.state.current_user_data = None
 
+    rag_cloud.memory.chat_memory.clear()  # Tyhjennetään muisti
+
     logging.info("User logged out successfully.")
     return {"status": "success", "message": "logout_success"}
     
 # Create new user to MongoDB, returns unique dataId
 @router.post("/", response_model=dict)
-async def create_user(user: UserModel):
+async def create_user(user: UserModel, request: Request):
     try:
         user_dict = user.model_dump() 
         result = await users_collection.insert_one(user_dict)
@@ -85,6 +88,13 @@ async def create_user(user: UserModel):
 
         # Convert ObjectId to string
         object_id = str(result.inserted_id)
+
+        logged_in = False
+        current_user_id = None
+
+        request.app.state.logged_in = True
+        request.app.state.current_user_id = str(result.inserted_id)
+
         logging.info(f"✅ User saved with ObjectId: {object_id}")
         return {"user_id": object_id, "message": "User created successfully"}
     

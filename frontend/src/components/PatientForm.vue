@@ -144,6 +144,11 @@
 
           if (response) {
             this.userId = response;
+              
+            // Päivitä localStorage ja lähetä tapahtuma
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('user', JSON.stringify({ userId: response }));
+            window.dispatchEvent(new CustomEvent('authChange')); // Lähetä tapahtuma
             
           }
         } catch (error) {
@@ -311,4 +316,3 @@ button[type="button"]:hover {
   
 }
 </style>
-
