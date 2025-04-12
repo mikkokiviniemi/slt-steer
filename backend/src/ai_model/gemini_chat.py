@@ -1,8 +1,15 @@
+"""
+gemini_chat.py
+
+Tämä moduuli tarjoaa GeminiChat-luokan, jonka avulla voi käydä keskusteluja
+Google gemini -kielimallin kanssa.
+"""
+
 from google import genai
 from google.genai import types
 
-class RagModel:
-    def __init__(self, api_key, temperature=0.5, max_output_tokens=500, model="gemini-2.0-flash-lite"):
+class GeminiChat:
+    def __init__(self, api_key, temperature=0.5, max_output_tokens=500, model="gemini-2.0-flash-lite", document_content=""):
 
         self.client = genai.Client(api_key=api_key)
         self.system_instruction = (
@@ -24,6 +31,8 @@ class RagModel:
             "If the question is in Finnish and the information is not found in the context, say: "
             "'Valitettavasti minulla ei ole riittävästi tietoa esittämääsi aiheeseen. Suosittelen ottamaan yhteyttä asiantuntijaan tai hoitavaan tahoon tarvittaessa.' "
             "Tämän jälkeen kysy luontevasti jatkokysymys, joka auttaa käyttäjää tarkentamaan tilannettaan ottaen huomioon aikaisemman keskustelun. "
+            "\n\n"
+            "Context: {document_content}"
         )
 
         self.chat = self.client.chats.create(
@@ -38,4 +47,3 @@ class RagModel:
     def generate_response(self, user_input: str) -> str:
         response = self.chat.send_message(user_input)
         return response.text
-    

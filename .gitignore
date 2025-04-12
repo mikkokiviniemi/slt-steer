@@ -33,8 +33,5 @@ debug.log
 .DS_Store
 Thumbs.db
 
-#db_cache
-db_cache/
-
 #chroma_db
-chroma_db/
+data/
