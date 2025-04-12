@@ -85,14 +85,15 @@ else:
 # 2) Luodaan RAG-ketju (retriever + LLM + prompt)
 # -----------------------------
 retriever = vectorstore.as_retriever(
-    search_type="mmr",
-    search_kwargs={"k": 5}
+    search_type="similarity_score_threshold", # Vain dokumentit, jotka ovat riittävän lähellä käyttäjän kysymystä, otetaan mukaan.
+    search_kwargs={"k": 6, "score_threshold": 0.6} # Kysytään 6 eniten samankaltaista dokumenttia, joista vain ne, joiden samankaltaisuus on yli 0.6, otetaan mukaan.
 )
 
 llm = ChatGoogleGenerativeAI(
-    model='gemini-1.5-flash-002',
-    temperature=0,
-    max_tokens=500,
+    model='gemini-2.0-flash-001', # Gemini 2.0 Flash
+    temperature=0.3, # Alustava lämpötila
+    max_tokens=1000,    # nostettu 500 -> 1000
+    top_p=0.9,
     google_api_key=google_api_key
 )
 
@@ -103,7 +104,7 @@ system_prompt = (
     "You are an assistant for question-answering tasks. "
     "Use the following pieces of retrieved context and chat history to answer the question. "
     "Do not use any outside knowledge or make assumptions. "
-    "Use three sentences maximum for the main answer and keep the response concise. "
+    "Determine first whether the question is in Finnish or English, and respond in the same language. "
 
     "If the question is in English and the information is found in the context, first provide a concise answer. "
     "Then, naturally continue the conversation by asking a relevant follow-up question based on the user's query and chat history. "
@@ -133,26 +134,45 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 question_answer_chain = create_stuff_documents_chain(llm, prompt)
-rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+#rag_chain = create_retrieval_chain(retriever, question_answer_chain)
 
 # -----------------------------
 # 3) Julkaistava funktio, jolla saa RAG-vastauksen
 # -----------------------------
-def get_rag_response(user_input: str) -> str:
+async def get_rag_response(user_input: str) -> str:
     """ Kysyy RAG-ketjulta (Chroma+GEMINI) ja palauttaa vastauksen tekstinä. """
-    # Lisää nykyinen käyttäjän syöte muistiin
     memory.chat_memory.add_user_message(user_input)
-    
-    # Suorita ketju
-    response = rag_chain.invoke({
+
+    # Ensihaku (asynkroninen invoke)
+    relevant_docs = await retriever.ainvoke(user_input)
+
+    # Fallback tarvittaessa
+    if not relevant_docs:
+        print("⚠️ Ei tarpeeksi relevantteja osumia threshold-hausta – otetaan käyttöön fallback MMR...")
+        fallback_retriever = vectorstore.as_retriever(
+            search_type="mmr",
+            search_kwargs={"k": 5}#, "fetch_k": 20, "lambda_mult": 0.5}
+        )
+        relevant_docs = await fallback_retriever.ainvoke(user_input)
+
+        if not relevant_docs:
+            no_info_msg = (
+                "Valitettavasti minulla ei ole riittävästi tietoa kysymääsi aiheeseen. "
+                "Suosittelen ottamaan yhteyttä asiantuntijaan tai hoitavaan tahoon."
+            )
+            memory.chat_memory.add_ai_message(no_info_msg)
+            return no_info_msg
+
+    # Vastauksen generointi (asynkronisesti)
+    response = await question_answer_chain.ainvoke({
         "input": user_input,
+        "context": relevant_docs,
         "chat_history": memory.buffer
     })
-    
-    # Lisää vastaus muistiin
-    memory.chat_memory.add_ai_message(response["answer"])
-    
-    return response["answer"]
+
+    memory.chat_memory.add_ai_message(response)
+    return response
+
 
 def clear_conversation_memory():
     """ Tyhjentää keskustelumuistin """
