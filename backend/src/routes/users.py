@@ -1,15 +1,85 @@
 import logging
-from fastapi import APIRouter, HTTPException
+from ai_model import rag_cloud
+from fastapi import APIRouter, HTTPException, FastAPI
 from database.db import users_collection
 from database.models import UserModel
 from bson import ObjectId
+from flask import jsonify
+from fastapi import Request
 
+app = FastAPI()
 router = APIRouter()
 logging.basicConfig(level=logging.INFO)
 
+# Global variables for user session
+logged_in = False
+current_user_id = None
+current_user_data = None
+
+
+@router.post("/login")
+async def check_user_id(user_data: dict, request: Request):  # Lisätty Request-parametri
+    """
+    Kirjautuu sisään käyttäjänä, joka on jo olemassa MongoDB:ssä.
+    Tarkistaa onko käyttäjä olemassa ja palauttaa käyttäjätiedot.
+    Jos käyttäjää ei löydy, palauttaa virheilmoituksen.
+    """
+    
+    # Set global variables
+    global logged_in, current_user_id, current_user_data
+
+    try:
+        user_id = user_data.get("user_id")
+        
+        if not ObjectId.is_valid(user_id):
+            return {"status": "error", "message": "invalid_id"}
+
+        # tekee saman työn kuin main.py:ssä
+        user = await users_collection.find_one({"_id": ObjectId(user_id)})
+        
+        if not user:
+            return {"status": "error", "message": "not_found"}
+
+        user["_id"] = str(user["_id"])
+        
+        # Päivitä  globaalit muuttujat JA sovelluksen tila
+        logged_in = True
+        current_user_id = user["_id"]
+        current_user_data = user
+        request.app.state.logged_in = True  # <-- Tallenna sovelluksen tilaan eli mainiin
+        request.app.state.current_user_id = user["_id"]
+        request.app.state.current_user_data = user
+
+        logging.info(f"User logged in: {user_id}")
+        return {"status": "success", "user": user, "message": "success"}
+
+    except Exception as e:
+        logging.exception("Login error")
+        return {"status": "error", "message": "server_error"}
+
+
+@router.post("/logout")
+async def logout(request: Request):
+    """
+    Kirjaa käyttäjän ulos ja nollaa globaalit muuttujat.
+    """
+    global logged_in, current_user_id, current_user_data
+    logged_in = False
+    current_user_id = None
+    current_user_data = None
+
+    request.app.state.logged_in = False
+    request.app.state.current_user_id = None
+    request.app.state.current_user_data = None
+
+    rag_cloud.memory.chat_memory.clear()  # Tyhjennetään muisti
+
+    logging.info("User logged out successfully.")
+    return {"status": "success", "message": "logout_success"}
+    
 # Create new user to MongoDB, returns unique dataId
 @router.post("/", response_model=dict)
-async def create_user(user: UserModel):
+async def create_user(user: UserModel, request: Request):
     try:
         user_dict = user.model_dump() 
         result = await users_collection.insert_one(user_dict)
@@ -18,6 +88,13 @@ async def create_user(user: UserModel):
 
         # Convert ObjectId to string
         object_id = str(result.inserted_id)
+
+        logged_in = False
+        current_user_id = None
+
+        request.app.state.logged_in = True
+        request.app.state.current_user_id = str(result.inserted_id)
+
         logging.info(f"✅ User saved with ObjectId: {object_id}")
         return {"user_id": object_id, "message": "User created successfully"}
     
