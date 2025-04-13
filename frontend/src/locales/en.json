@@ -23,17 +23,11 @@
     "accessibility": "Accessibility",
     "analytics": "Analytics & Insights"
   },
-  "accessibility" : {
-    "title" : "Accessibility Settings",
-    "screenReader" : "Enable screen reader support",
-    "enable" : "Enable"
-  },
-  "analytics": {
-    "title": "Analytics & Insights",
-    "usageStats": "Usage Statistics",
-    "enableTracking": "Enable tracking"
-  },
   "modifyPersonalInfo": {
+    "requiredFields": "Weight and height are required fields",
+    "invalidNumeric": "Please enter valid numbers for weight and height",
+    "invalidUser": "User not recognized. Please log in again.",
+    "loginPrompt": "Please log in to modify your information",
     "title": "Modify Personal Info",
     "name": "Name",
     "age": "Age",
@@ -44,7 +38,10 @@
     "save": "Save",
     "basicInfo": "Basic Information",
     "healthInfo": "Health Information",
-    "medicalInfo": "Medical Information"
+    "medicalInfo": "Medical Information",
+    "saveSuccess": "Information saved successfully!",
+    "saveError": "Save failed. Please try again.",
+    "loadError": "Failed to load data"
   },
   "personalInfo": {
     "title": "Personal Information",
@@ -86,16 +83,9 @@
   },
   "login": {
     "title": "Login",
-<<<<<<< HEAD
-    "username": "Username",
-    "password": "Password",
-    "logIn": "Log In",
-    "userId": "User ID"
-=======
     "username": "Enter user ID",
     "logIn": "Log In",
     "Logout": "Logout"
->>>>>>> origin/FinalVersionLogin
   },
   "patientForm": {
     "title": "Preliminary Form",

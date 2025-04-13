@@ -37,8 +37,6 @@ import { ref, watch } from "vue";
 import PersonalInfo from "./settings/PersonalInfo.vue";
 import ModifyPersonalInfo from "./settings/ModifyPersonalInfo.vue";
 import UserLogin from "./settings/UserLogin.vue";
-import AccessibilitySettings from "./settings/AccessibilitySettings.vue";
-import AnalyticsInsights from "./settings/AnalyticsInsights.vue";
 
 const activeSection = ref("personalInfo");
 
@@ -71,8 +69,6 @@ const sections = [
   { key: "personalInfo" },
   { key: "modifyPersonalInfo" },
   { key: "login" },
-  { key: "accessibility" },
-  { key: "analytics" },
 ];
 </script>
 

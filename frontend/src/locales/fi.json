@@ -23,17 +23,11 @@
     "accessibility": "Saavutettavuus",
     "analytics": "Analytiikka"
   },
-  "accessibility" : {
-    "title" : "Saavutettavuusasetukset",
-    "screenReader" : "Ota ruudunlukuohjelma käyttöön",
-    "enable" : "Ota käyttöön"
-  },
-  "analytics": {
-    "title": "Analytiikka ja tiedot",
-    "usageStats": "Käyttötiedot",
-    "enableTracking": "Salli seuranta"
-  },
   "modifyPersonalInfo": {
+    "requiredFields": "Paino ja pituus ovat pakollisia kenttiä",
+    "invalidNumeric": "Anna kelvolliset numerot painolle ja pituudelle",
+    "invalidUser": "Käyttäjä ei tunnistettu. Kirjaudu uudelleen sisään.",
+    "loginPrompt": "Kirjaudu sisään muokataksesi tietojasi",
     "title": "Muokkaa henkilötietoja",
     "name": "Nimi",
     "age": "Ikä",
@@ -44,7 +38,10 @@
     "save": "Tallenna",
     "basicInfo": "Perustiedot",
     "healthInfo": "Terveystiedot",
-    "medicalInfo": "Lääketiedot"
+    "medicalInfo": "Lääketiedot",
+    "saveSuccess": "Tiedot tallennettu onnistuneesti!",
+    "saveError": "Tallennus epäonnistui. Yritä uudelleen.",
+    "loadError": "Tietojen lataus epäonnistui"
   },
   "personalInfo": {
     "title": "Henkilötiedot",
@@ -86,16 +83,9 @@
   },
   "login": {
     "title": "Kirjaudu sisään",
-<<<<<<< HEAD
-    "username": "Käyttäjätunnus",
-    "password": "Salasana",
-    "logIn": "Kirjaudu sisään",
-    "userId": "Käyttäjätunnus"
-=======
     "username": "Syötä käyttäjä ID",
     "logIn": "Kirjaudu sisään",
     "Logout": "Kirjaudu ulos"
->>>>>>> origin/FinalVersionLogin
   },
   "patientForm": {
     "title": "Esitietolomake",

@@ -1,75 +1,261 @@
-/* Yhteiset tyylit kaikille asetuskomponenteille */
-.settings-section {
-    padding: 20px;
-    font-family: 'Inter', sans-serif;
-    color: #333;
+:root {
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --text: #000000; /* Changed to pure black for better visibility */
+  --text-light: #444; /* Darker gray for better contrast */
+  --text-lighter: #666;
+  --border: #e0e0e0;
+  --border-light: #f0f0f0;
+  --bg-light: #fafafa;
+  --success: #166534;
+  --success-bg: #f0fdf4;
+  --success-border: #bbf7d0;
+  --error: #991b1b;
+  --error-bg: #fef2f2;
+  --error-border: #fecaca;
+}
+
+/* Base Settings Styles */
+.settings-section, .modern-settings {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.settings-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.settings-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.settings-subtitle {
+  font-size: 1rem;
+  color: var(--text-light);
+  font-weight: 400;
+}
+
+/* Form Grid Layout */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Cards */
+.form-card, .info-section, .form-section {
+  background: white;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.form-card-title, .settings-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* Form Elements */
+.form-group, .form-row, .info-row {
+  margin-bottom: 1.25rem;
+}
+
+.input-label, .form-row label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text); /* Changed to pure black */
+  margin-bottom: 0.5rem;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-unit {
+  position: absolute;
+  right: 12px;
+  font-size: 0.875rem;
+  color: var(--text-light);
+}
+
+.modern-input, 
+.settings-section input, 
+.settings-section select, 
+.settings-section textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  border: 1px solid var(--border);
+  background-color: white;
+  transition: all 0.2s;
+  color: var(--text); /* Ensured text is black */
+}
+
+.modern-input:focus,
+.settings-section input:focus,
+.settings-section select:focus,
+.settings-section textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+select.modern-input,
+.settings-section select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+/* Buttons */
+.modern-submit-btn, 
+.settings-section button, 
+.submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  background-color: var(--primary);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 0 auto;
+}
+
+.modern-submit-btn:hover, 
+.settings-section button:hover, 
+.submit-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.submit-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Messages */
+.modern-message, 
+.settings-success, 
+.settings-error,
+.login-message {
+  padding: 1rem;
+  font-size: 0.9375rem;
+  text-align: center;
+  margin-top: 1rem;
+  border: 1px solid transparent;
+}
+
+.modern-message.success, 
+.settings-success,
+.success-message {
+  background-color: var(--success-bg);
+  color: var(--success);
+  border-color: var(--success-border);
+}
+
+.modern-message.error, 
+.settings-error,
+.error-message {
+  background-color: var(--error-bg);
+  color: var(--error);
+  border-color: var(--error-border);
+}
+
+/* Lists */
+.value-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.value-list li {
+  padding: 6px 0;
+  position: relative;
+  padding-left: 20px;
+}
+
+.value-list li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: bold;
+}
+
+/* Checkboxes */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.checkbox-input {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  accent-color: var(--primary);
+}
+
+/* Login Prompt */
+.login-prompt {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #e7f1ff;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .settings-header h2 {
+    font-size: 1.5rem;
   }
   
   .settings-section h2 {
-    margin: 0 0 16px;
-    font-size: 20px;
-    color: #333;
+    font-size: 1.5rem;
   }
-  
-  .settings-section p {
-    margin: 0 0 12px;
-    color: #666;
-  }
-  
-  .settings-section input,
-  .settings-section select,
-  .settings-section button {
-    display: block;
-    margin: 10px 0;
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-    max-width: 300px;
-  }
-  
-  .settings-section button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .settings-section button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Checkbox-tyylit */
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    color: #333;
-  }
-  
-  .checkbox-input {
-    width: 16px;
-    height: 16px;
-    margin: 0;
-    cursor: pointer;
-  }
-  
-  /* Lisää tyylejä checkboxin ulkoasulle */
-  .checkbox-input {
-    accent-color: #007bff; /* Muuttaa checkboxin värin */
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-
-  }
-  .checkbox-input:hover {
-  border-color: #007bff;
 }
-  /* Valittu checkbox */
-  .checkbox-input:checked {
-    background-color: #007bff;
-    border-color: #007bff;
+
+
+
+@media (min-width: 768px) {
+  .form-row {
+    flex-direction: row;
+    align-items: center;
   }
+  
+  .form-row label {
+    width: 220px;
+    margin-bottom: 0;
+  }
+  
+  .form-row input,
+  .form-row select,
+  .form-row textarea {
+    flex: 1;
+  }
+}
