@@ -13,11 +13,10 @@
           <p>{{ loggedIn ? $t("logout") : $t("settings.login") }}</p>
         </a>
       </li>
-      <li>
-        <a
-          href="#"
-          @click.prevent="openPatientForm"
-        >{{ $t("preliminaryForm") }}</a>
+      <li v-if="!loggedIn">
+        <a href="#" @click.prevent="openPatientForm">
+          <p>{{ $t("preliminaryForm") }}</p>
+        </a>
       </li>
     </ul>
   </aside>
