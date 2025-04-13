@@ -1,12 +1,12 @@
-# Heartwise (slt-steer)
-
+![LOGO](https://github.com/mikkokiviniemi/slt-steer/blob/main/frontend/src/assets/logo.png)
+# Heartwise (slt-steer) 
 ![workflow](https://github.com/mikkokiviniemi/slt-steer/actions/workflows/main.yml/badge.svg)
 [![Last Commit](https://img.shields.io/github/last-commit/mikkokiviniemi/slt-steer)](https://github.com/mikkokiviniemi/slt-steer)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/mikkokiviniemi/slt-steer/blob/main/LICENSE)
 
 
 ## 💡 About
-*A web application (with mobile phone view) that provides individualized treatment guidance for (heart disease) patients.*
+A web application (with mobile phone view) that provides individualized treatment guidance for (heart disease) patients.
 
 ## 🛠️ Installation and running 
 ### Installation and running on Windows
