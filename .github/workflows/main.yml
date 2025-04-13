@@ -12,7 +12,13 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-    
+
+    - name: Create .env file from secrets
+      run: |
+        echo "GEMINI_API=${{ secrets.GEMINI_API }}" >> .env
+        echo "GOOGLE_APPLICATION_CREDENTIALS=" >> .env
+        echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
+
     # Make scripts executable
     - name: Make scripts executable
       run: chmod +x scripts/*.sh
@@ -27,16 +33,16 @@ jobs:
       run: ./scripts/run_tests.sh
       shell: bash
       
-    # Optionally, run backend
-    # - name: Verify backend startup
-      # run: ./scripts/run_backend.sh
-      # shell: bash
-      # continue-on-error: true
-      # timeout-minutes: 5
+    # Run backend
+    - name: Verify backend startup
+      run: ./scripts/run_backend.sh
+      shell: bash
+      continue-on-error: true
+      timeout-minutes: 5
       
-    # Optionally, run frontend
-    # - name: Verify frontend startup
-      # run: ./scripts/run_frontend.sh
-      # shell: bash
-      # continue-on-error: true
-      # timeout-minutes: 5
+    # Run frontend
+    - name: Verify frontend startup
+      run: ./scripts/run_frontend.sh
+      shell: bash
+      continue-on-error: true
+      timeout-minutes: 5
