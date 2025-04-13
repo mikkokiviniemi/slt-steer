@@ -1,0 +1,43 @@
+name: CI/CD Pipeline with Custom Scripts
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  setup-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    # Make scripts executable (if needed)
+    - name: Make scripts executable
+      run: chmod +x *.sh
+      
+    # Run your installation script
+    - name: Run installation script
+      run: ./scripts/install.sh < /dev/null
+      shell: bash
+      
+    # Run tests script
+    - name: Run tests
+      run: ./run_tests.sh
+      shell: bash
+      
+    # Run backend
+    # - name: Verify backend startup
+      #run: ./run_backend.sh
+      #shell: bash
+      #continue-on-error: true  # In case this keeps running
+      #timeout-minutes: 5       # Will stop after 5 minutes
+      
+    # Run frontend
+    #- name: Verify frontend startup
+      #run: ./run_frontend.sh
+      #shell: bash
+      #continue-on-error: true  # In case this keeps running
+      #timeout-minutes: 5       # Will stop after 5 minutes
