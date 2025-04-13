@@ -9,7 +9,7 @@ from google import genai
 from google.genai import types
 
 class GeminiChat:
-    def __init__(self, api_key, temperature=0.5, max_output_tokens=500, model="gemini-2.0-flash-lite", document_content=""):
+    def __init__(self, api_key, temperature=0, max_output_tokens=500, model="gemini-2.0-flash-lite", document_content=""):
 
         self.client = genai.Client(api_key=api_key)
         self.system_instruction = (
