@@ -32,9 +32,11 @@ cd slt-steer
 ./scripts/run_frontend.sh
 ```
 ## 🧪 Testing
+### Testing on Windows
 ```bash
 .\scripts\run_tests.bat
 ```
+### Testing on Linux
 ```bash
 ./scripts/run_tests.sh
 ```
