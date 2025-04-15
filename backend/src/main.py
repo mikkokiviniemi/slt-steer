@@ -15,7 +15,7 @@ google_api_key = os.getenv('GEMINI_API')
 app = FastAPI()
 folder_name = "data"
 os.makedirs(folder_name, exist_ok=True)
-data = utils.download_pdfs_from_bucket("training_data-1","data/data.txt")
+data = gemini_chat.download_pdfs_from_bucket("training_data-1","data/data.txt")
 gemini_chat_system = gemini_chat.GeminiChat(api_key=google_api_key,temperature=0, max_output_tokens=2000, model="gemini-2.0-flash-lite", document_content=data)
 
 

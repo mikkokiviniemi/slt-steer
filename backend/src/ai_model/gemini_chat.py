@@ -3,10 +3,60 @@ gemini_chat.py
 
 Tämä moduuli tarjoaa GeminiChat-luokan, jonka avulla voi käydä keskusteluja
 Google gemini -kielimallin kanssa.
+
+Example: 
+folder_name = "data"
+os.makedirs(folder_name, exist_ok=True)
+data = gemini_chat.download_pdfs_from_bucket("training_data-1","data/data.txt")
+gemini_chat_system = gemini_chat.GeminiChat(api_key=google_api_key,temperature=0, max_output_tokens=2000, model="gemini-2.0-flash-lite", document_content=data)
 """
 
+import io
+import os
+import PyPDF2
 from google import genai
 from google.genai import types
+from google.cloud import storage
+
+def download_pdfs_from_bucket(bucket_name,local_path) -> str:
+    if os.path.exists(local_path):
+        with open(local_path, "r") as file:
+            content = file.read()
+        print("File exists. Using existing data\n")
+
+        return content
+    else:
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+        blobs = bucket.list_blobs()
+
+        all_text = ""
+
+        for blob in blobs:
+            if blob.name.lower().endswith(".pdf"):
+                print(f"Downloading {blob.name} from {bucket_name}...")
+                all_text += blob.name + "\n"
+                try:
+                    pdf_content = blob.download_as_bytes()
+                    pdf_file = io.BytesIO(pdf_content)
+                    reader = PyPDF2.PdfReader(pdf_file)
+                    for page in reader.pages:
+                        text = page.extract_text()
+                        if text:
+                            all_text += text + "\n"
+                except PyPDF2.errors.PdfReadError as e:
+                    return f"Error reading PDF file {blob.name}: {e}"
+                except Exception as e:
+                    return f"Error processing PDF file {blob.name}: {e}"
+
+        if not all_text:
+            return "No PDF files found or no text extracted from PDFs."
+        
+        with open(local_path, "w") as file:
+            file.write(all_text)
+
+        return all_text
+
 
 class GeminiChat:
     def __init__(self, api_key, temperature=0, max_output_tokens=500, model="gemini-2.0-flash-lite", document_content=""):
