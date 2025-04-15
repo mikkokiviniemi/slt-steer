@@ -71,10 +71,12 @@ async def send_message(payload: dict):
 
     # 3) Kutsutaan RAG-mallia
     try:
-        raw_response = rag_cloud.get_rag_response(prompt)
+        raw_response = await rag_cloud.get_rag_response(prompt)
         formatted_text = utils.formatGeminiResponse(raw_response)
         return {"reply": formatted_text}
     except Exception as e:
+        import traceback
+        traceback.print_exc()  # Näyttää tarkemman syyn konsolissa
         raise HTTPException(status_code=500, detail=str(e))
 
 # Register user routes
