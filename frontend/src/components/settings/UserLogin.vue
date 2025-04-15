@@ -72,6 +72,7 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
+
 .login-message {
   margin-top: 1rem;
   font-size: 0.9rem;

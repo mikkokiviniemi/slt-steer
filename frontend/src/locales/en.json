@@ -23,17 +23,11 @@
     "accessibility": "Accessibility",
     "analytics": "Analytics & Insights"
   },
-  "accessibility" : {
-    "title" : "Accessibility Settings",
-    "screenReader" : "Enable screen reader support",
-    "enable" : "Enable"
-  },
-  "analytics": {
-    "title": "Analytics & Insights",
-    "usageStats": "Usage Statistics",
-    "enableTracking": "Enable tracking"
-  },
   "modifyPersonalInfo": {
+    "requiredFields": "Weight and height are required fields",
+    "invalidNumeric": "Please enter valid numbers for weight and height",
+    "invalidUser": "User not recognized. Please log in again.",
+    "loginPrompt": "Please log in to modify your information",
     "title": "Modify Personal Info",
     "name": "Name",
     "age": "Age",
@@ -41,13 +35,45 @@
     "male": "Male",
     "female": "Female",
     "other": "Other",
-    "save": "Save"
+    "save": "Save",
+    "basicInfo": "Basic Information",
+    "healthInfo": "Health Information",
+    "medicalInfo": "Medical Information",
+    "saveSuccess": "Information saved successfully!",
+    "saveError": "Save failed. Please try again.",
+    "loadError": "Failed to load data"
   },
   "personalInfo": {
-    "title": "Personal Info",
-    "name": "Name",
-    "age": "Age",
-    "gender": "Gender"
+    "title": "Personal Information",
+    "basicInfo": "Basic Information",
+    "healthInfo": "Health Information",
+    "medicalInfo": "Medical Information",
+    "weight": "Weight",
+    "height": "Height",
+    "avgBloodPressure": "Average Blood Pressure",
+    "alcoholUse": "Alcohol Use",
+    "activity": "Physical Activity",
+    "conditions": "Medical Conditions",
+    "riskFactors": "Risk Factors",
+    "allergies": "Allergies",
+    "medications": "Medications",
+    "heartProcedures": "Heart Procedures",
+    "notProvided": "Not provided",
+    "loginPrompt": "To view your personal health information, please log in."
+  },
+  "units": {
+    "kg": "kg",
+    "cm": "cm"
+  },
+  "options": {
+    "none": "None",
+    "occasional": "Occasional",
+    "moderate": "Moderate",
+    "heavy": "Heavy",
+    "sedentary": "Sedentary",
+    "light": "Light",
+    "active": "Active",
+    "very_active": "Very active"
   },
   "loginStatus": {
     "success": "Login successful!",
@@ -66,18 +92,18 @@
     "weight": "Weight",
     "height": "Height",
     "conditions": "Medical Conditions",
-    "conditionsPlaceholder": "Separate with commas",
+    "conditionsPlaceholder": "Separate with commas (e.g. Diabetes, Hypertension)",
     "avgBloodPressure": "Average Blood Pressure",
     "riskFactors": "Risk Factors",
-    "riskFactorsPlaceholder": "Smoking, diabetes, high cholesterol, hypertension, family history",
+    "riskFactorsPlaceholder": "Separate with commas (e.g. Smoking, Family history)",
     "alcoholUse": "Alcohol Use",
     "allergies": "Allergies",
-    "allergiesPlaceholder": "Separate with commas",
+    "allergiesPlaceholder": "Separate with commas (e.g. Penicillin, Nuts)",
     "activity": "Physical Activity",
     "medications": "Medications",
-    "medicationsPlaceholder": "Separate with commas",
+    "medicationsPlaceholder": "Separate with commas (e.g. Metformin, Lisinopril)",
     "heartProcedures": "Heart Procedures",
-    "heartProceduresPlaceholder": "Separate with commas",
+    "heartProceduresPlaceholder": "Separate with commas (e.g. Angioplasty, Bypass)",
     "save": "Save",
     "skip": "Skip",
     "saveSuccess": "Preliminary information saved!",

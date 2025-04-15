@@ -156,3 +156,70 @@ async def get_user_by_object_id(user_id: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+# User tietojen näyttäminen endpoint
+@router.get("/current-user")
+async def get_current_user(request: Request):
+    """Palauttaa kirjautuneen käyttäjän tiedot"""
+    if not request.app.state.logged_in:
+        return {"status": "error", "message": "not_logged_in"}
+    
+    if not request.app.state.current_user_data:
+        return {"status": "error", "message": "no_user_data"}
+    
+    return {
+        "status": "success",
+        "user": request.app.state.current_user_data
+    }
+# Kirjautumistilan tarkistus tietojen tuomista varten
+@router.get("/check-session")
+async def check_session(request: Request):
+    """Tarkistaa kirjautumistilan"""
+    return {
+        "isLoggedIn": request.app.state.logged_in,
+        "userId": request.app.state.current_user_id
+    }
+# endpoint tietojen tallentamista varten
+@router.put("/id/{user_id}")
+async def update_user(user_id: str, user_data: dict, request: Request):
+    try:
+        if not ObjectId.is_valid(user_id):
+            return {"status": "error", "message": "invalid_id"}
+
+        # Kenttien validointi
+        if not all(key in user_data for key in ["weight", "height"]):
+            return {"status": "error", "message": "missing_required_fields"}
+
+        # Numeerien konvertointi
+        try:
+            user_data["weight"] = float(user_data["weight"])
+            user_data["height"] = float(user_data["height"])
+        except (ValueError, TypeError):
+            return {"status": "error", "message": "invalid_numeric_values"}
+
+        # tarkistetaan käyttäjän olemassaolo
+        existing_user = await users_collection.find_one({"_id": ObjectId(user_id)})
+        if not existing_user:
+            return {"status": "error", "message": "user_not_found"}
+
+        # tietokannan päivitys
+        result = await users_collection.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": user_data}
+        )
+
+        if result.modified_count == 0:
+            return {"status": "error", "message": "no_changes"}
+
+        # haetaan päivitetty käyttäjä
+        updated_user = await users_collection.find_one({"_id": ObjectId(user_id)})
+        updated_user["_id"] = str(updated_user["_id"])
+
+        # päivitetään sessio
+        request.app.state.current_user_data = updated_user
+
+        return {"status": "success", "user": updated_user}
+
+    except Exception as e:
+        logging.error(f"Update failed: {str(e)}")
+        return {"status": "error", "message": "update_failed"}
