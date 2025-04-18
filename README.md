@@ -40,6 +40,33 @@ cd slt-steer
 ```bash
 ./scripts/run_tests.sh
 ```
+
+## 🐳 Docker
+This project supports Docker for running, testing, and development.
+### 🧪 Tested With
+This project has been tested with the following versions:
+- **Docker**: 28.1.0 (build 4d8c241)
+- **Docker Compose**: v2.35.0
+Ensure you have compatible versions installed to avoid issues.
+---
+
+## 🔐 Environment Setup
+To run the application and tests successfully, you must provide the required credentials and environment variables.
+### 📁 Required Files and Locations
+Ensure the following files exist in your project:
+#### 1. Google Cloud credentials JSON
+/slt-steer/cloud_storage_key.json
+This file contains your Google Cloud service account key used for authentication.
+#### 2. Backend environment file
+/slt-steer/backend/.env
+This file must contain the following environment variables:
+
+```env
+GEMINI_API=your_google_gemini_api_key
+GOOGLE_APPLICATION_CREDENTIALS=/app/cloud_storage_key.json
+MONGO_URI=your_mongo_connection_string
+```
+
 ## 🧰 Tech Stack
 ### Frontend
 *TODO*

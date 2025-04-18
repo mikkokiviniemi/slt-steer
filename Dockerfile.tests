@@ -1,0 +1,31 @@
+FROM python:3.10-slim
+
+# Install required system packages
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    git \
+    python3-venv \
+    python3-pip
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g npm
+
+# Set working directory
+WORKDIR /app
+COPY . .
+
+# Create virtualenv and install backend dependencies
+RUN python3 -m venv backend/venv && \
+    backend/venv/bin/pip install --upgrade pip && \
+    backend/venv/bin/pip install -r backend/src/requirements.txt
+
+# Install frontend dependencies
+RUN cd frontend && npm install
+
+# Make scripts executable
+RUN chmod +x scripts/run_tests.sh
+
+CMD ["scripts/run_tests.sh"]

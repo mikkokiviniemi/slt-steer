@@ -1,0 +1,23 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - backend/.env
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
