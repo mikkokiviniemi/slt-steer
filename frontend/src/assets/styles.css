@@ -52,7 +52,7 @@ body, html {
     width: 100%;
     height: 100%;
     background-color: var(--background-light); /* Ensure background covers */
-    font-family: "Arial", sans-serif;
+    font-family: "Inter", sans-serif;
 }
 
 /*Headerbar styling*/
@@ -129,7 +129,7 @@ body, html {
     padding: 30px 50px;
     transition: left 0.2s;
     font-size: 1rem;
-    font-family: 'Arial', sans-serif; /* Sama fontti kuin chat-ikkunan nappuloissa */
+    font-family: 'Inter', sans-serif; /* Sama fontti kuin chat-ikkunan nappuloissa */
   }
 
   .sidebar.open {
