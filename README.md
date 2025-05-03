@@ -42,11 +42,13 @@ cd slt-steer
 ```
 ## 🧰 Tech Stack
 ### Frontend
-*TODO*
+- [Vue.js](https://vuejs.org/)
 ### Backend
-*TODO*
+- [MongoDB](https://www.mongodb.com/)
+- [Python](https://www.python.org/)
 ### AI model
-*TODO*
+- [Google Gemini](https://ai.google.dev/)
+- [Google Cloud](https://cloud.google.com/apis?hl=en)
 
 ## 📜 License
 This project is licensed under the [MIT License](https://github.com/mikkokiviniemi/slt-steer/blob/main/LICENSE)
